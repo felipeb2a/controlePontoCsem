@@ -28,6 +28,7 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import model.Funcionario;
 import model.Icone;
+import model.PontoMes;
 
 /**
  *
@@ -41,6 +42,8 @@ public class TelaImportExcel extends javax.swing.JFrame {
     List listaControlePonto;
     ControlePonto controlePonto;
     Ponto ponto;
+    PontoMes pontoMes;
+    Funcionario funcionario;
 
     public TelaImportExcel() throws SQLException, ClassNotFoundException {
         initComponents();
@@ -79,7 +82,6 @@ public class TelaImportExcel extends javax.swing.JFrame {
         try {
             nameDb = "csem_controle_de_ponto";
             FuncionarioDAO dao = new FuncionarioDAO();
-            Funcionario funcionario;
             List funcionarioList = dao.ObterNomeFuncionario(nameDb);
             Iterator it = funcionarioList.iterator();
 
@@ -262,7 +264,9 @@ public class TelaImportExcel extends javax.swing.JFrame {
             int opcao = JOptionPane.showOptionDialog(null, "Clique Confirmar para continuar! \n" + "\n MÊS: " + mes
                     + "\n ANO: " + cbAno.getYear(), "CONFIRMAÇÃO OS DADOS SELECIONADOS", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0]);
             if (opcao == 0) {
-
+                int month = cbMes.getMonth();
+                int year = cbAno.getYear();
+                
                 //DEFINIR TAMANHO DA ARRAY
                 String[][] array = new String[33][5];
 
@@ -301,7 +305,18 @@ public class TelaImportExcel extends javax.swing.JFrame {
                     }
                     txtHorasExtras.setText(horaFormatada);
                     txtHoraTrabalhada.setText(ponto.getSomaHoraTrabalhada());
-
+                    
+                    //ID do funcionario
+                    ponto.setFuncionario(funcionario);
+                    
+                    //ADICIONAR
+                    pontoMes.setSomaHoraTrabalhada(ponto.getSomaHoraTrabalhada());
+                    pontoMes.setSomaHoraExtra(ponto.getSomaHoraExtra());
+                    pontoMes.setSaldo(ponto.getSomaHoraExtra());
+                    pontoMes.setAno(year);
+                    pontoMes.setMes(month);
+                    ponto.setPontoMes(pontoMes);
+                    
                 } catch (IOException ex) {
                     Logger.getLogger(TelaImportExcel.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (ParseException ex) {
@@ -331,6 +346,8 @@ public class TelaImportExcel extends javax.swing.JFrame {
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(TelaImportExcel.class.getName()).log(Level.SEVERE, null, ex);
             } catch (SQLException ex) {
+                Logger.getLogger(TelaImportExcel.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ParseException ex) {
                 Logger.getLogger(TelaImportExcel.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {

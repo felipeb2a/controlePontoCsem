@@ -20,7 +20,7 @@ public class FuncionarioDAO extends AcessDB {
         Connection conexao = conectar(dbName);
 
         // contruindo a consulta
-        String sql = "select f.idFuncionario, f.nome from funcionario f";
+        String sql = "select * from funcionario f order by f.idFuncionario";
 
         // criando o objeto que vai executar a consulta no banco
         PreparedStatement stm = conexao.prepareStatement(sql);
