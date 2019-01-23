@@ -4,8 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.Iterator;
 import java.util.List;
+import model.Format;
 import model.Ponto;
 
 /**
@@ -14,13 +16,14 @@ import model.Ponto;
  */
 public class PontoDAO extends AcessDB {
 
-    public void salvaPonto(List<Ponto> pontoList, String nameDb) throws ClassNotFoundException, SQLException {
+    public void salvaPonto(List<Ponto> pontoList, String nameDb) throws ClassNotFoundException, SQLException, ParseException {
         Connection conexao = conectar(nameDb);
-
+        Format format = new Format();
         for (Iterator it = pontoList.iterator(); it.hasNext();) {
-            
+
             Ponto ponto = new Ponto();
-            String sql = "insert into ponto values(?,?,?,?,?)";
+
+            String sql = "insert into ponto values(?,?,?,?,?,?,?,?,?,?,?,?)";
 
             PreparedStatement stmt = conexao.prepareStatement(sql);
             //SEQUENCIA
@@ -30,13 +33,20 @@ public class PontoDAO extends AcessDB {
             //alterando objeto
             ponto.setId(seq);
 
-            stmt.setInt(1, usuario.getId());
+            stmt.setInt(1, ponto.getId());
             //----------------------------------->
 
-            stmt.setString(2, usuario.getLogin());
-            stmt.setString(3, usuario.getSenha());
-            stmt.setString(4, usuario.getEmail());
-            stmt.setInt(5, usuario.getNivel().getId());
+            stmt.setDate(2, format.convertDataSql(ponto.getDia()));
+            stmt.setDate(3, format.convertDataSql(ponto.getEntrada()));
+            stmt.setDate(4, format.convertDataSql(ponto.getSaidaIntervalo()));
+            stmt.setDate(5, format.convertDataSql(ponto.getEntradaIntervalo()));
+            stmt.setDate(6, format.convertDataSql(ponto.getSaida()));
+            stmt.setDate(7, format.convertDataSql(ponto.getHorasTrabalhadas()));
+            stmt.setString(8, ponto.getHoraExtraFomatada());
+            stmt.setLong(9, ponto.getHoraE());
+            stmt.setLong(10, ponto.getMinutoE());
+            stmt.setInt(11, ponto.getPontoMes().getId());
+            stmt.setInt(12, ponto.getFuncionario().getId());
 
             stmt.execute();
             stmt.close();
