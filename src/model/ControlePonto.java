@@ -209,10 +209,6 @@ public class ControlePonto {
             // convert horas trabalhadas;
             ponto.setHorasTrabalhadas(formatDataHora(ponto.getDia(),
                     convertStringTime(horas + ":" + minutos)));
-
-            //somar horas trabalhadas
-            String somaHorasTrabalhadas ="00:00";
-            somaHorasTrabalhadas = somaHoraLong(horas, minutos, somaHorasTrabalhadas);
             
         } catch (ParseException | NullPointerException ex) {
             System.out.println(getClass().getName() + "\n" + ex);
