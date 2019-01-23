@@ -21,6 +21,7 @@ import java.util.logging.Logger;
  */
 public class Ponto {
 
+    private int id;
     private Date dia;
     private String diaSemana;
     private Date entrada;

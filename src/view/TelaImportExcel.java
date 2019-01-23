@@ -6,6 +6,7 @@
 package view;
 
 import dao.FuncionarioDAO;
+import dao.PontoDAO;
 import model.ImportExcel;
 import model.Ponto;
 import model.ControlePonto;
@@ -37,6 +38,9 @@ public class TelaImportExcel extends javax.swing.JFrame {
     //VARIAVEIS GLOBAIS
     private ArrayList mostrarTela = new ArrayList();
     private String nameDb;
+    List listaControlePonto;
+    ControlePonto controlePonto;
+    Ponto ponto;
 
     public TelaImportExcel() throws SQLException, ClassNotFoundException {
         initComponents();
@@ -250,9 +254,9 @@ public class TelaImportExcel extends javax.swing.JFrame {
             //PEGAR VALORES MES E ANO
             Calendar c1 = Calendar.getInstance();
             c1.set(Calendar.MONTH, cbMes.getMonth());
-            ControlePonto controlePonto = new ControlePonto();
+            controlePonto = new ControlePonto();
             String mes = controlePonto.month(c1);
-            
+
             //CONFIRMAR DADOS
             Object[] options = {"Confirmar", "Cancelar"};
             int opcao = JOptionPane.showOptionDialog(null, "Clique Confirmar para continuar! \n" + "\n MÊS: " + mes
@@ -261,12 +265,12 @@ public class TelaImportExcel extends javax.swing.JFrame {
 
                 //DEFINIR TAMANHO DA ARRAY
                 String[][] array = new String[33][5];
-                
+
                 //OBJECT
                 ImportExcel excel = new ImportExcel();
-                Ponto ponto = new Ponto();
+                ponto = new Ponto();
                 try {
-                    List listaControlePonto = excel.carregarPontoExcel(cbMes.getMonth(), cbAno.getYear(), 
+                    listaControlePonto = excel.carregarPontoExcel(cbMes.getMonth(), cbAno.getYear(),
                             ((String) cbFuncionario.getSelectedItem()));
                     DefaultTableModel model = (DefaultTableModel) tbPonto.getModel();
                     model.setNumRows(0);
@@ -312,7 +316,28 @@ public class TelaImportExcel extends javax.swing.JFrame {
     }//GEN-LAST:event_btImportActionPerformed
 
     private void btSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSalvarActionPerformed
-        // TODO add your handling code here:
+        boolean valida = true;
+        String msgErro = "";
+        DefaultTableModel model = (DefaultTableModel) tbPonto.getModel();
+        int rows = model.getRowCount();
+        if (rows == 0) {
+            msgErro += "-Favor importar excel\n";
+            valida = false;
+        }
+        if (valida) {
+            PontoDAO pontoDao = new PontoDAO();
+            try {
+                pontoDao.salvaPonto(listaControlePonto, nameDb);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(TelaImportExcel.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex) {
+                Logger.getLogger(TelaImportExcel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, msgErro);
+        }
+
+
     }//GEN-LAST:event_btSalvarActionPerformed
 
     /**
