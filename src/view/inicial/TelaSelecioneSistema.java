@@ -139,7 +139,7 @@ public class TelaSelecioneSistema extends javax.swing.JFrame {
     private void btSunewGeradoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSunewGeradoresActionPerformed
         try {
             String dbSunewGeradores;
-            dbSunewGeradores = "sunewgeradores_" + armazenaAno;
+            dbSunewGeradores = "sunewgeradores_controle_de_ponto";
             //TELA SELECIONE SISTEMA
             TelaLogin tela = new TelaLogin();
             this.setVisible(false);
@@ -155,7 +155,7 @@ public class TelaSelecioneSistema extends javax.swing.JFrame {
     private void btCsemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btCsemActionPerformed
         try {
             String dbCsem;
-            dbCsem = "csem_" + armazenaAno;
+            dbCsem = "csem_controle_de_ponto";
             //TELA SELECIONE SISTEMA
             TelaLogin tela = new TelaLogin();
             this.setVisible(false);
@@ -171,7 +171,7 @@ public class TelaSelecioneSistema extends javax.swing.JFrame {
     private void btSunewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSunewActionPerformed
         try {
             String dbSunew;
-            dbSunew = "sunew_" + armazenaAno;
+            dbSunew = "sunew_controle_de_ponto";
             //TELA SELECIONE SISTEMA
             TelaLogin tela = new TelaLogin();
             this.setVisible(false);
