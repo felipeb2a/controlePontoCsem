@@ -38,6 +38,16 @@ public class Ponto {
     private String saldo;
     private String motivo;
     private Date jornadaDeTrabalho;
+    private Funcionario funcionario;
+    private PontoMes pontoMes;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public Date getDia() {
         return dia;
@@ -169,6 +179,22 @@ public class Ponto {
         data = controlePonto.formatDataHora(ponto.getDia(), time);
 
         return data;
+    }
+
+    public Funcionario getFuncionario() {
+        return funcionario;
+    }
+
+    public void setFuncionario(Funcionario funcionario) {
+        this.funcionario = funcionario;
+    }
+
+    public PontoMes getPontoMes() {
+        return pontoMes;
+    }
+
+    public void setPontoMes(PontoMes pontoMes) {
+        this.pontoMes = pontoMes;
     }
 
 }

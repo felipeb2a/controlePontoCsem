@@ -11,9 +11,18 @@ import java.util.Date;
  */
 public class Funcionario {
 
+    private int id;
     private String nome;
     private String cargo;
     private Date jornadaDeTrabalho;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getNome() {
         return nome;

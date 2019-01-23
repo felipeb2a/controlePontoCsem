@@ -18,6 +18,8 @@ public class PontoDAO extends AcessDB {
         Connection conexao = conectar(nameDb);
 
         for (Iterator it = pontoList.iterator(); it.hasNext();) {
+            
+            Ponto ponto = new Ponto();
             String sql = "insert into ponto values(?,?,?,?,?)";
 
             PreparedStatement stmt = conexao.prepareStatement(sql);
@@ -26,7 +28,7 @@ public class PontoDAO extends AcessDB {
             int seq = obterProximoValorSequence(nameDb);
 
             //alterando objeto
-            usuario.setId(seq);
+            ponto.setId(seq);
 
             stmt.setInt(1, usuario.getId());
             //----------------------------------->
