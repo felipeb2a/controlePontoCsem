@@ -7,7 +7,7 @@ import java.io.File;
  * @author felipe.ferreira
  */
 public class FilesPath {
-    
+    /*
     //DEFINIR PASTAS PRINCIPAL
     
     //RC
@@ -21,8 +21,11 @@ public class FilesPath {
 //    private static String pastaSunewGeradoresLog = "\\\\15.0.0.3\\Team\\06. SUNEW GERADORES\\01. ADMINISTRATIVO-FINANCEIRO\\COMPRAS\\01. CONTROLE DE COMPRAS\\07. LOGs\\";
 //    
 /*###################################################################################################################################################################################*/
-    /*
+    
     //DEFINIR PASTAS TESTE
+    private static String pastaPontoCsem = "C:\\Users\\felipe.ferreira\\Documents\\GitHub\\controlePontoCsem\\excel\\";
+    private static String pastaPontoSunew = "C:\\Users\\felipe.ferreira\\Documents\\GitHub\\controlePontoCsem\\excel\\";
+    private static String pastaPontoSunewGeradores = "C:\\Users\\felipe.ferreira\\Documents\\GitHub\\controlePontoCsem\\excel\\";
     
     /*###################################################################################################################################################################################*/
     public static String getPastaPontoCsem() {

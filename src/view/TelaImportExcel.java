@@ -131,7 +131,7 @@ public class TelaImportExcel extends javax.swing.JFrame {
             }
         });
 
-        tbPonto.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        tbPonto.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
         tbPonto.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -236,63 +236,79 @@ public class TelaImportExcel extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btImportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btImportActionPerformed
-        //string mes
-        Calendar c1 = Calendar.getInstance();
-        c1.set(Calendar.MONTH, cbMes.getMonth());
-//        Ponto ponto = new Ponto();
-        ControlePonto controlePonto = new ControlePonto();
-        String mes = controlePonto.month(c1);
+        boolean valida = true;
+        String msgErro = "";
 
-        //CONFIRMAR DADOS
-        Object[] options = {"Confirmar", "Cancelar"};
-        int opcao = JOptionPane.showOptionDialog(null, "Clique Confirmar para continuar! \n" + "\n MÊS: " + mes
-                + "\n ANO: " + cbAno.getYear(), "CONFIRMAÇÃO OS DADOS SELECIONADOS", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0]);
-        if (opcao == 0) {
-
-            String[][] array = new String[33][5];
-            ImportExcel excel = new ImportExcel();
-            Ponto ponto = new Ponto();
-            try {
-                List listaControlePonto = excel.carregarPontoExcel(cbMes.getMonth(), cbAno.getYear());
-                DefaultTableModel model = (DefaultTableModel) tbPonto.getModel();
-                model.setNumRows(0);
-
-                for (Iterator it = listaControlePonto.iterator(); it.hasNext();) {
-
-                    ponto = (Ponto) it.next();
-                    Object linha[]
-                            = {ponto.getDiaSemana(),
-                                controlePonto.formatDataReturnString(ponto.getDia()),
-                                controlePonto.convertDateTime(ponto.getEntrada()),
-                                controlePonto.convertDateTime(ponto.getSaidaIntervalo()),
-                                controlePonto.convertDateTime(ponto.getEntradaIntervalo()),
-                                controlePonto.convertDateTime(ponto.getSaida()),
-                                controlePonto.convertDateTime(ponto.getHorasTrabalhadas()),
-                                ponto.getHoraExtraFomatada()};
-                    model.addRow(linha);
-                }
-
-                String[] str = ponto.getSomaHoraExtra().split(":");
-                String horaFormatada = controlePonto.formatarHoraNegativa(Long.valueOf(str[0]), Long.valueOf(str[1]));
-                int verificador = ponto.getSomaHoraExtra().indexOf("-", 0);
-                if (verificador == 0) {
-                    txtHorasExtras.setForeground(Color.red);
-                }
-                if (verificador == -1) {
-                    txtHorasExtras.setForeground(Color.green);
-                }
-                txtHorasExtras.setText(horaFormatada);
-                txtHoraTrabalhada.setText(ponto.getSomaHoraTrabalhada());
-
-            } catch (IOException ex) {
-                Logger.getLogger(TelaImportExcel.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ParseException ex) {
-                Logger.getLogger(TelaImportExcel.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, "Selecione os campos para continuar!");
+        //VERIFICA CAMPOS
+        if (cbFuncionario.getSelectedItem().equals("Selecione")) {
+            msgErro += "- Favor selecionar o funcionário\n";
+            valida = false;
         }
 
+        //CAMPOS VALIDADOS
+        if (valida) {
+            //PEGAR VALORES MES E ANO
+            Calendar c1 = Calendar.getInstance();
+            c1.set(Calendar.MONTH, cbMes.getMonth());
+            ControlePonto controlePonto = new ControlePonto();
+            String mes = controlePonto.month(c1);
+            
+            //CONFIRMAR DADOS
+            Object[] options = {"Confirmar", "Cancelar"};
+            int opcao = JOptionPane.showOptionDialog(null, "Clique Confirmar para continuar! \n" + "\n MÊS: " + mes
+                    + "\n ANO: " + cbAno.getYear(), "CONFIRMAÇÃO OS DADOS SELECIONADOS", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0]);
+            if (opcao == 0) {
+
+                //DEFINIR TAMANHO DA ARRAY
+                String[][] array = new String[33][5];
+                
+                //OBJECT
+                ImportExcel excel = new ImportExcel();
+                Ponto ponto = new Ponto();
+                try {
+                    List listaControlePonto = excel.carregarPontoExcel(cbMes.getMonth(), cbAno.getYear(), 
+                            ((String) cbFuncionario.getSelectedItem()));
+                    DefaultTableModel model = (DefaultTableModel) tbPonto.getModel();
+                    model.setNumRows(0);
+
+                    for (Iterator it = listaControlePonto.iterator(); it.hasNext();) {
+
+                        ponto = (Ponto) it.next();
+                        Object linha[]
+                                = {ponto.getDiaSemana(),
+                                    controlePonto.formatDataReturnString(ponto.getDia()),
+                                    controlePonto.convertDateTime(ponto.getEntrada()),
+                                    controlePonto.convertDateTime(ponto.getSaidaIntervalo()),
+                                    controlePonto.convertDateTime(ponto.getEntradaIntervalo()),
+                                    controlePonto.convertDateTime(ponto.getSaida()),
+                                    controlePonto.convertDateTime(ponto.getHorasTrabalhadas()),
+                                    ponto.getHoraExtraFomatada()};
+                        model.addRow(linha);
+                    }
+
+                    String[] str = ponto.getSomaHoraExtra().split(":");
+                    String horaFormatada = controlePonto.formatarHoraNegativa(Long.valueOf(str[0]), Long.valueOf(str[1]));
+                    int verificador = ponto.getSomaHoraExtra().indexOf("-", 0);
+                    if (verificador == 0) {
+                        txtHorasExtras.setForeground(Color.red);
+                    }
+                    if (verificador == -1) {
+                        txtHorasExtras.setForeground(Color.green);
+                    }
+                    txtHorasExtras.setText(horaFormatada);
+                    txtHoraTrabalhada.setText(ponto.getSomaHoraTrabalhada());
+
+                } catch (IOException ex) {
+                    Logger.getLogger(TelaImportExcel.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ParseException ex) {
+                    Logger.getLogger(TelaImportExcel.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Selecione os campos para continuar!");
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, msgErro);
+        }
     }//GEN-LAST:event_btImportActionPerformed
 
     private void btSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSalvarActionPerformed

@@ -29,8 +29,8 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
  */
 public class ImportExcel {
 
-    public List<Ponto> carregarPontoExcel(int mes, int ano) throws FileNotFoundException, IOException, ParseException {
-
+    public List<Ponto> carregarPontoExcel(int mes, int ano, String funcionario) throws FileNotFoundException, IOException, ParseException {
+        System.out.println("mes "+mes);
         //list
         List<Ponto> pontoList = new ArrayList();
         //object
@@ -40,14 +40,15 @@ public class ImportExcel {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 
         // local do arquivo
-        String path = "C:\\Users\\felipe.ferreira\\Documents\\GitHub\\controlePontoCsem\\lib\\12 - Folhas de Ponto DEZEMBRO.xls";
+        int mesPadrao = mes + 1;
+        String path = FilesPath.getPastaPontoCsem()+mesPadrao+".xls";
         String filename = path;
         //carregar arquivo
         FileInputStream fileInputStream = new FileInputStream(filename);
 
         //ler workbook
         HSSFWorkbook workbook = new HSSFWorkbook(fileInputStream);
-        HSSFSheet worksheet = workbook.getSheet("Felipe Ferreira");
+        HSSFSheet worksheet = workbook.getSheet(funcionario);
 
         //linha 1
         HSSFRow row1 = worksheet.getRow(0);
