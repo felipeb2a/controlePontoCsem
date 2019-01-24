@@ -30,7 +30,6 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
 public class ImportExcel {
 
     public List<Ponto> carregarPontoExcel(int mes, int ano, String funcionario) throws FileNotFoundException, IOException, ParseException {
-        System.out.println("mes "+mes);
         //list
         List<Ponto> pontoList = new ArrayList();
         //object
@@ -41,7 +40,7 @@ public class ImportExcel {
 
         // local do arquivo
         int mesPadrao = mes + 1;
-        String path = FilesPath.getPastaPontoCsem()+mesPadrao+".xls";
+        String path = FilesPath.getPastaPontoCsem() + mesPadrao + ".xls";
         String filename = path;
         //carregar arquivo
         FileInputStream fileInputStream = new FileInputStream(filename);
@@ -83,21 +82,24 @@ public class ImportExcel {
                             String subStr = dia.substring(0, 2);
                             array[i][x] = subStr;
                         }
-                    }
-                    if (x > 0 && x < 7) {
+                    }else if (x > 0 && x < 7) {
                         row = worksheet.getRow(i);
                         Date hora = row.getCell(x).getDateCellValue();
                         String horaJ = sdf.format(hora);
                         array[i][x] = horaJ;
+
                     } else {
+                        System.out.println(i);
                     }
                 } catch (IllegalStateException ex) {
                     row = worksheet.getRow(i);
                     String str = row.getCell(x).toString();
                     array[i][x] = str;
+
                 } catch (NullPointerException ex) {
                     String str = "00:00";
                     array[i][x] = str;
+//                    System.out.println(i);
                 }
             }
         }
@@ -114,13 +116,15 @@ public class ImportExcel {
                     //Date data = null;
                     try {
                         ponto = controlePonto.formatDataInt(dia, mes, ano);
-                        //controlePonto.setDia(data);
+                        controlePonto.formatDataTimeInt(dia, mes, ano);
                     } catch (ParseException ex) {
                         Logger.getLogger(ImportExcel.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
                 if (x == 1) {
-                    ponto.setEntrada(controlePonto.formatDataHora(ponto.getDia(), controlePonto.convertStringTime(array[i][x])));
+                    ponto.setEntrada(controlePonto.formatDataHora(ponto.getDia(), 
+                            controlePonto.convertStringTime(array[i][x])));
+//                    System.out.println(ponto.getDia() +" - " + array[i][x]);
                 }
                 if (x == 2) {
                     ponto.setSaidaIntervalo(controlePonto.formatDataHora(ponto.getDia(),

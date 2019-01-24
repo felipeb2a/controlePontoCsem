@@ -15,10 +15,12 @@ import java.awt.Color;
 import static java.awt.Frame.MAXIMIZED_BOTH;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
@@ -259,7 +261,7 @@ public class TelaImportExcel extends javax.swing.JFrame {
             c1.set(Calendar.MONTH, cbMes.getMonth());
             controlePonto = new ControlePonto();
             String mes = controlePonto.month(c1);
-
+            
             //CONFIRMAR DADOS
             Object[] options = {"Confirmar", "Cancelar"};
             int opcao = JOptionPane.showOptionDialog(null, "Clique Confirmar para continuar! \n" + "\n MÊS: " + mes
@@ -349,6 +351,9 @@ public class TelaImportExcel extends javax.swing.JFrame {
             try {
                 //salva pontoMes
                 pontoMesDao.salvaPontoMes(pontoMes, nameDb);
+                if(pontoMes.getId() == 0){
+                    pontoMes.setId(1);
+                }
                 ponto.setPontoMes(pontoMes);
                 pontoDao.salvaPonto(listaControlePonto, ponto, nameDb);
             } catch (ClassNotFoundException ex) {

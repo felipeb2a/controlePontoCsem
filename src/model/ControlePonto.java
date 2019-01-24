@@ -1,9 +1,12 @@
 package model;
 
 import java.sql.Time;
+import java.sql.Timestamp;
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -116,21 +119,36 @@ public class ControlePonto {
 
     public Ponto formatDataInt(int dia, int mes, int ano) throws ParseException {
         Ponto controlePonto = new Ponto();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         Calendar c = Calendar.getInstance();;
         c.set(Calendar.DAY_OF_MONTH, dia);
         c.set(Calendar.MONTH, mes);
         c.set(Calendar.YEAR, ano);
+        c.set(Calendar.HOUR, 2);
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
+        
 
         Date data;
-        String a = (new SimpleDateFormat(" dd/MM/yyyy").format(c.getTime()));
+        String a = (new SimpleDateFormat(" dd/MM/yyyy HH:mm").format(c.getTime()));
         data = sdf.parse(a);
 
         controlePonto.setDia(data);
-
+//        System.out.println(c.getTime());
         //definir dia da semana
         controlePonto.setDiaSemana(weekDay(c));
         return controlePonto;
+    }
+    
+    public void formatDataTimeInt(int dia, int mes, int ano) throws ParseException {
+        mes = mes + 1;
+        Ponto ponto = new Ponto();
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime ldt = LocalDateTime.of(ano, mes, dia, 0, 0);
+        
+        String str = ldt.format(dtf);
     }
 
     public Date formatDataHora(Date data, Time time) throws ParseException {
@@ -142,7 +160,6 @@ public class ControlePonto {
         int mes = c.get(Calendar.MONTH);
         int ano = c.get(Calendar.YEAR);
 
-        //pegar hora
         c.setTime(time);
         //definir data
         c.set(Calendar.DAY_OF_MONTH, dia);
@@ -193,7 +210,7 @@ public class ControlePonto {
 
     public Ponto calculoHoraTrabalhada(Ponto ponto) {
         try {
-            
+
             Date entrada = ponto.getEntrada();
             Date saidaIntervalo = ponto.getSaidaIntervalo();
             Date entradaIntervalo = ponto.getEntradaIntervalo();
@@ -209,7 +226,7 @@ public class ControlePonto {
             // convert horas trabalhadas;
             ponto.setHorasTrabalhadas(formatDataHora(ponto.getDia(),
                     convertStringTime(horas + ":" + minutos)));
-            
+
         } catch (ParseException | NullPointerException ex) {
             System.out.println(getClass().getName() + "\n" + ex);
         }
@@ -264,7 +281,7 @@ public class ControlePonto {
 
         if (verificadorHora == 0 && verificadorMinuto == 0) {
             String[] str = minutoStr.split("-");
-           strRetorno = horaStr + ":" + str[1];
+            strRetorno = horaStr + ":" + str[1];
         }
         if (verificadorHora == 0 && verificadorMinuto == -1) {
             strRetorno = horaStr + ":" + minutoStr;
