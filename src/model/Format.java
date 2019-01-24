@@ -1,5 +1,6 @@
 package model;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.Date;
 
@@ -12,5 +13,10 @@ public class Format {
     //CONVERT DATE SQL
     public static java.sql.Date convertDataSql(Date date) throws ParseException {
         return new java.sql.Date(date.getTime());
+    }
+    
+    //CONVERT DATETIME SQL
+    public static Timestamp convertDataTimeSql(Date date) throws ParseException {
+        return new Timestamp(date.getTime());
     }
 }

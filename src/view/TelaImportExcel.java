@@ -319,9 +319,6 @@ public class TelaImportExcel extends javax.swing.JFrame {
                     pontoMes.setMes(month);
 
                     ponto.setPontoMes(pontoMes);
-                    
-                    Format format = new Format();
-                    System.out.println(format.convertDataSql(ponto.getEntrada()));
 
                 } catch (IOException ex) {
                     Logger.getLogger(TelaImportExcel.class.getName()).log(Level.SEVERE, null, ex);

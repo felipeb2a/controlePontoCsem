@@ -38,12 +38,12 @@ public class PontoDAO extends AcessDB {
             stmt.setInt(1, pontoLista.getId());
             //----------------------------------->
 
-            stmt.setDate(2, format.convertDataSql(pontoLista.getDia()));
-            stmt.setDate(3, format.convertDataSql(pontoLista.getEntrada()));
-            stmt.setDate(4, format.convertDataSql(pontoLista.getSaidaIntervalo()));
-            stmt.setDate(5, format.convertDataSql(pontoLista.getEntradaIntervalo()));
-            stmt.setDate(6, format.convertDataSql(pontoLista.getSaida()));
-            stmt.setDate(7, format.convertDataSql(pontoLista.getHorasTrabalhadas()));
+            stmt.setTimestamp(2, format.convertDataTimeSql(pontoLista.getDia()));
+            stmt.setTimestamp(3, format.convertDataTimeSql(pontoLista.getEntrada()));
+            stmt.setTimestamp(4, format.convertDataTimeSql(pontoLista.getSaidaIntervalo()));
+            stmt.setTimestamp(5, format.convertDataTimeSql(pontoLista.getEntradaIntervalo()));
+            stmt.setTimestamp(6, format.convertDataTimeSql(pontoLista.getSaida()));
+            stmt.setTimestamp(7, format.convertDataTimeSql(pontoLista.getHorasTrabalhadas()));
             stmt.setString(8, pontoLista.getHoraExtraFomatada());
             stmt.setLong(9, pontoLista.getHoraE());
             stmt.setLong(10, pontoLista.getMinutoE());
