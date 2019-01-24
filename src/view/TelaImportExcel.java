@@ -310,6 +310,7 @@ public class TelaImportExcel extends javax.swing.JFrame {
                     ponto.setFuncionario(funcionario);
                     
                     //ADICIONAR
+                    pontoMes = new PontoMes();
                     pontoMes.setSomaHoraTrabalhada(ponto.getSomaHoraTrabalhada());
                     pontoMes.setSomaHoraExtra(ponto.getSomaHoraExtra());
                     pontoMes.setSaldo(ponto.getSomaHoraExtra());
