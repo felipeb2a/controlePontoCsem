@@ -273,7 +273,7 @@ public class TelaImportExcelManualSubtrairHoras extends javax.swing.JFrame {
                 ImportExcel excel = new ImportExcel();
                 ponto = new Ponto();
                 try {
-                    listaControlePonto = excel.carregarPontoExcel(cbMes.getMonth(), cbAno.getYear(),
+                    listaControlePonto = excel.carregarPontoExcelVerificaMesAnterior(cbMes.getMonth(), cbAno.getYear(),
                             funcionario, nameDb);
                     DefaultTableModel model = (DefaultTableModel) tbPonto.getModel();
                     model.setNumRows(0);

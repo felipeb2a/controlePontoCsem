@@ -306,4 +306,14 @@ public class ControlePonto {
         }
         return minuto;
     }
+
+    public boolean verificaAnoBissexto(int ano) {
+        boolean bissexto = false;
+        if ((ano % 400 == 0) || ((ano % 4 == 0) && (ano % 100 != 0))) {
+            bissexto = true;
+        } else {
+            bissexto = false;
+        }
+        return bissexto;
+    }
 }

@@ -5,9 +5,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import model.Format;
+import model.Funcionario;
 import model.Ponto;
 import model.PontoMes;
 
@@ -17,6 +19,145 @@ import model.PontoMes;
  */
 public class PontoDAO extends AcessDB {
 
+    public List<Ponto> ObterListPontoMes(Ponto ponto, String dbName) throws SQLException, ClassNotFoundException {
+
+        // lista de retorno
+        List pontoList = new ArrayList();
+
+        // conectando ao banco de dados
+        Connection conexao = conectar(dbName);
+
+        // contruindo a consulta
+        String sql = "select * from ponto p inner join pontomes pm on pm.idPontoMes = p.fkPontoMes inner join funcionario f on f.idFuncionario = p.fkFuncionario  where pm.mes = ?  and f.idFuncionario = ?";
+
+        // criando o objeto que vai executar a consulta no banco
+        PreparedStatement stm = conexao.prepareStatement(sql);
+
+        //passando os parametros para a consulta
+        stm.setInt(1,  ponto.getPontoMes().getId());
+        stm.setInt(2,  ponto.getFuncionario().getId());
+        
+        // recebendo o resultado da consulta
+        ResultSet resultado = stm.executeQuery();
+        
+        //chamar metodo lista funcionario
+        pontoList = consultaListPonto(resultado);
+        
+        // Encerrando a conexão.
+        conexao.close();
+        return pontoList;
+    }
+
+    public Ponto obterPonto(Ponto ponto, String dbName) throws SQLException, ClassNotFoundException, ParseException {
+        Format format = new Format();
+        // lista de retorno
+        Ponto pontoRetorno = new Ponto();
+
+        // conectando ao banco de dados
+        Connection conexao = conectar(dbName);
+
+        // contruindo a consulta
+        String sql = "select * from funcionario f where f.nome = ?";
+
+        // criando o objeto que vai executar a consulta no banco
+        PreparedStatement stm = conexao.prepareStatement(sql);
+
+        //passando os parametros para a consulta
+        stm.setTimestamp(1,  format.convertDataTimeSql(ponto.getDia()));
+
+        // recebendo o resultado da consulta
+        ResultSet resultado = stm.executeQuery();
+
+        //chamar metodo lista funcionario
+        pontoRetorno = consultaPonto(resultado);
+
+        // Encerrando a conexão.
+        conexao.close();
+        return pontoRetorno;
+    }
+
+    public List<Ponto> consultaListPonto(ResultSet resultado) throws SQLException, ClassNotFoundException {
+
+        // lista de retorno
+        List pontoList = new ArrayList();
+
+        // criando objeto de retorno
+        while (resultado.next()) {
+            Ponto pontoRetorno;
+            pontoRetorno = new Ponto();
+            pontoRetorno.setId(resultado.getInt("idPonto"));
+            pontoRetorno.setDia(resultado.getDate("dia"));
+            pontoRetorno.setEntrada(resultado.getTime("entrada"));
+            pontoRetorno.setSaidaIntervalo(resultado.getTime("saidaIntervalo"));
+            pontoRetorno.setEntradaIntervalo(resultado.getTime("entradaIntervalo"));
+            pontoRetorno.setSaida(resultado.getTime("saida"));
+            pontoRetorno.setHorasTrabalhadas(resultado.getTime("horasTrabalhadasDia"));
+            pontoRetorno.setHoraExtraFomatada(resultado.getString("horasExtrasTotalDia"));
+            pontoRetorno.setHoraE(resultado.getLong("horaExtraDia"));
+            pontoRetorno.setMinutoE(resultado.getLong("minutoExtraDia"));
+            pontoRetorno.setMotivo(resultado.getString("motivo"));
+            
+            //ponto mes
+            PontoMes pontoMes = new PontoMes();
+            pontoMes.setId(resultado.getInt("idPontoMes"));
+            pontoMes.setSomaHoraTrabalhada(resultado.getString("somaHoraTrabalhada"));
+            pontoMes.setSomaHoraExtra(resultado.getString("somaHoraExtra"));
+            pontoMes.setSaldo(resultado.getString("saldo"));            
+            pontoMes.setMes(resultado.getInt("mes"));
+            pontoMes.setAno(resultado.getInt("ano"));
+            
+            //funcionario
+            Funcionario funcionario = new Funcionario();
+            funcionario.setId(resultado.getInt("idFuncionario"));
+            funcionario.setNome(resultado.getString("nome"));
+            funcionario.setCargo(resultado.getString("cargo"));
+            funcionario.setJornadaDeTrabalho(resultado.getTime("jornadaDeTrabalho"));
+
+            pontoList.add(pontoRetorno);
+        }
+
+        return pontoList;
+    }
+    
+    public Ponto consultaPonto(ResultSet resultado) throws SQLException, ClassNotFoundException {
+
+        Ponto pontoRetorno = new Ponto();
+        // criando objeto de retorno
+        while (resultado.next()) {
+            pontoRetorno = new Ponto();
+            pontoRetorno.setId(resultado.getInt("idPonto"));
+            pontoRetorno.setDia(resultado.getDate("dia"));
+            pontoRetorno.setEntrada(resultado.getTime("entrada"));
+            pontoRetorno.setSaidaIntervalo(resultado.getTime("saidaIntervalo"));
+            pontoRetorno.setEntradaIntervalo(resultado.getTime("entradaIntervalo"));
+            pontoRetorno.setSaida(resultado.getTime("saida"));
+            pontoRetorno.setHorasTrabalhadas(resultado.getTime("horasTrabalhadasDia"));
+            pontoRetorno.setHoraExtraFomatada(resultado.getString("horasExtrasTotalDia"));
+            pontoRetorno.setHoraE(resultado.getLong("horaExtraDia"));
+            pontoRetorno.setMinutoE(resultado.getLong("minutoExtraDia"));
+            pontoRetorno.setMotivo(resultado.getString("motivo"));
+            
+            //ponto mes
+            PontoMes pontoMes = new PontoMes();
+            pontoMes.setId(resultado.getInt("idPontoMes"));
+            pontoMes.setSomaHoraTrabalhada(resultado.getString("somaHoraTrabalhada"));
+            pontoMes.setSomaHoraExtra(resultado.getString("somaHoraExtra"));
+            pontoMes.setSaldo(resultado.getString("saldo"));            
+            pontoMes.setMes(resultado.getInt("mes"));
+            pontoMes.setAno(resultado.getInt("ano"));
+            
+            //funcionario
+            Funcionario funcionario = new Funcionario();
+            funcionario.setId(resultado.getInt("idFuncionario"));
+            funcionario.setNome(resultado.getString("nome"));
+            funcionario.setCargo(resultado.getString("cargo"));
+            funcionario.setJornadaDeTrabalho(resultado.getTime("jornadaDeTrabalho"));
+            
+        }
+
+        return pontoRetorno;
+    }
+    
     public void salvaPonto(List<Ponto> pontoList, Ponto ponto, String nameDb) throws ClassNotFoundException, SQLException, ParseException {
         Connection conexao = conectar(nameDb);
         Format format = new Format();
