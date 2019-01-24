@@ -128,7 +128,6 @@ public class ControlePonto {
         c.set(Calendar.MINUTE, 0);
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 0);
-        
 
         Date data;
         String a = (new SimpleDateFormat(" dd/MM/yyyy HH:mm").format(c.getTime()));
@@ -140,13 +139,13 @@ public class ControlePonto {
         controlePonto.setDiaSemana(weekDay(c));
         return controlePonto;
     }
-    
+
     public void formatDataTimeInt(int dia, int mes, int ano) throws ParseException {
         mes = mes + 1;
         Ponto ponto = new Ponto();
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime ldt = LocalDateTime.of(ano, mes, dia, 0, 0);
-        
+
         String str = ldt.format(dtf);
     }
 
@@ -183,7 +182,7 @@ public class ControlePonto {
         return time;
     }
 
-    public String convertStringTime(Date timeStr) {
+    public String convertStringTime(Time timeStr) {
         String dateFormat = "";
         try {
             SimpleDateFormat format = new SimpleDateFormat("HH:mm");
@@ -279,19 +278,32 @@ public class ControlePonto {
 
         if (verificadorHora == 0 && verificadorMinuto == 0) {
             String[] str = minutoStr.split("-");
+            str[1] = verificaMinutoMenorDez(str[1]);
             strRetorno = horaStr + ":" + str[1];
         }
         if (verificadorHora == 0 && verificadorMinuto == -1) {
+            minutoStr = verificaMinutoMenorDez(minutoStr);
             strRetorno = horaStr + ":" + minutoStr;
         }
         if (verificadorHora == -1 && verificadorMinuto == 0) {
             String[] str = minutoStr.split("-");
+            str[1] = verificaMinutoMenorDez(str[1]);
             strRetorno = "-" + horaStr + ":" + str[1];
         }
         if (verificadorHora == -1 && verificadorMinuto == -1) {
+            minutoStr = verificaMinutoMenorDez(minutoStr);
             strRetorno = horaStr + ":" + minutoStr;
         }
         return strRetorno;
     }
 
+    public String verificaMinutoMenorDez(String minuto) {
+//        String retorno; 
+        //verifica minuto < 10
+        int min = Integer.valueOf(minuto);
+        if (min > 0 && min < 10) {
+            minuto = "0" + minuto;
+        }
+        return minuto;
+    }
 }

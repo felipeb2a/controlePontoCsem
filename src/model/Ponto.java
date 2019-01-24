@@ -171,7 +171,6 @@ public class Ponto {
         String hora = "08:48";
         Date data = (Date) format.parse(hora);
         Time time = new Time(data.getTime());
-        System.out.println(time);
         return time;
     }
 

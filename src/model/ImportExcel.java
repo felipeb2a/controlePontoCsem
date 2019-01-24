@@ -5,10 +5,12 @@
  */
 package model;
 
+import dao.FuncionarioDAO;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -29,7 +31,7 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
  */
 public class ImportExcel {
 
-    public List<Ponto> carregarPontoExcel(int mes, int ano, String funcionario) throws FileNotFoundException, IOException, ParseException {
+    public List<Ponto> carregarPontoExcel(int mes, int ano, Funcionario funcionario, String nameDb) throws FileNotFoundException, IOException, ParseException {
         //list
         List<Ponto> pontoList = new ArrayList();
         //object
@@ -47,7 +49,7 @@ public class ImportExcel {
 
         //ler workbook
         HSSFWorkbook workbook = new HSSFWorkbook(fileInputStream);
-        HSSFSheet worksheet = workbook.getSheet(funcionario);
+        HSSFSheet worksheet = workbook.getSheet(funcionario.getNome());
 
         //linha 1
         HSSFRow row1 = worksheet.getRow(0);
@@ -149,10 +151,21 @@ public class ImportExcel {
             //soma hora extra
             long horaExtra = ponto.getHoraE();
             long minutoExtra = ponto.getMinutoE();
-            somaHoraExtraFinal = controlePonto.somaHoraLong(horaExtra, minutoExtra, somaHoraExtraFinal);
+            somaHoraExtraFinal = controlePonto.somaHoraLong(horaExtra, minutoExtra, somaHoraExtraFinal);           
             ponto.setSomaHoraExtra(somaHoraExtraFinal);
 //            System.out.println("Hora: " + horaExtra + " | Minuto: " + minutoExtra + " | HoraExtraFinal: " + somaHoraExtraFinal);
-
+            
+            //adicionar funcionario            
+            try {
+                FuncionarioDAO funcionarioDao = new FuncionarioDAO();
+                funcionario = funcionarioDao.obterNomeFuncionario(funcionario, nameDb);
+            } catch (SQLException ex) {
+                Logger.getLogger(ImportExcel.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(ImportExcel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            ponto.setFuncionario(funcionario);
             pontoList.add(ponto);
         }
 //        for (ControlePonto c : controleList) {

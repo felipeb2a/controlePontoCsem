@@ -25,7 +25,7 @@ public class PontoDAO extends AcessDB {
 
             Ponto pontoLista = (Ponto) it.next();
 
-            String sql = "insert into ponto values(?,?,?,?,?,?,?,?,?,?,?,?)";
+            String sql = "insert into ponto values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
             PreparedStatement stmt = conexao.prepareStatement(sql);
             //SEQUENCIA
@@ -47,8 +47,9 @@ public class PontoDAO extends AcessDB {
             stmt.setString(8, pontoLista.getHoraExtraFomatada());
             stmt.setLong(9, pontoLista.getHoraE());
             stmt.setLong(10, pontoLista.getMinutoE());
-            stmt.setInt(11, ponto.getPontoMes().getId());
-            stmt.setInt(12, ponto.getFuncionario().getId());
+            stmt.setString(11, ponto.getMotivo());
+            stmt.setInt(12, ponto.getPontoMes().getId());
+            stmt.setInt(13, ponto.getFuncionario().getId());
 
             stmt.execute();
             stmt.close();

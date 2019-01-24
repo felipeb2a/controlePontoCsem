@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import model.Icone;
 import model.Usuario;
-import view.TelaImportExcel;
+import view.TelaImportExcelManual;
 
 /**
  *
@@ -125,7 +125,7 @@ public class TelaLogin extends javax.swing.JFrame {
                 } else {
                     JOptionPane.showMessageDialog(this, "Bem Vindo(a) " + usuario.getLogin());
                     //TELA SELECIONE LISTA
-                    TelaImportExcel tela = new TelaImportExcel();
+                    TelaImportExcelManual tela = new TelaImportExcelManual();
                     this.setVisible(false);
 //                    tela.ObterLogin(usuario);
 //                    tela.nameDb(nameDb);

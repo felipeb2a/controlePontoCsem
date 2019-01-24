@@ -38,7 +38,7 @@ import model.PontoMes;
  *
  * @author felipe.ferreira
  */
-public class TelaImportExcel extends javax.swing.JFrame {
+public class TelaImportExcelManual extends javax.swing.JFrame {
 
     //VARIAVEIS GLOBAIS
     private ArrayList mostrarTela = new ArrayList();
@@ -49,7 +49,7 @@ public class TelaImportExcel extends javax.swing.JFrame {
     PontoMes pontoMes;
     Funcionario funcionario;
 
-    public TelaImportExcel() throws SQLException, ClassNotFoundException {
+    public TelaImportExcelManual() throws SQLException, ClassNotFoundException {
         initComponents();
         MaximizeTela();
         ListarUsuario();
@@ -86,7 +86,7 @@ public class TelaImportExcel extends javax.swing.JFrame {
         try {
             nameDb = "csem_controle_de_ponto";
             FuncionarioDAO dao = new FuncionarioDAO();
-            List funcionarioList = dao.ObterNomeFuncionario(nameDb);
+            List funcionarioList = dao.ObterListFuncionario(nameDb);
             Iterator it = funcionarioList.iterator();
             while (it.hasNext()) {
                 funcionario = (Funcionario) it.next();
@@ -140,7 +140,6 @@ public class TelaImportExcel extends javax.swing.JFrame {
             }
         });
 
-        tbPonto.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
         tbPonto.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -150,8 +149,6 @@ public class TelaImportExcel extends javax.swing.JFrame {
             }
         ));
         jScrollPane1.setViewportView(tbPonto);
-
-        cbAno.setFont(new java.awt.Font("Tahoma", 1, 16)); // NOI18N
 
         cbMes.setFont(new java.awt.Font("Tahoma", 1, 16)); // NOI18N
 
@@ -269,7 +266,8 @@ public class TelaImportExcel extends javax.swing.JFrame {
             if (opcao == 0) {
                 int month = cbMes.getMonth();
                 int year = cbAno.getYear();
-
+                funcionario.setNome((String) cbFuncionario.getSelectedItem());
+                
                 //DEFINIR TAMANHO DA ARRAY
                 String[][] array = new String[33][5];
 
@@ -278,7 +276,7 @@ public class TelaImportExcel extends javax.swing.JFrame {
                 ponto = new Ponto();
                 try {
                     listaControlePonto = excel.carregarPontoExcel(cbMes.getMonth(), cbAno.getYear(),
-                            ((String) cbFuncionario.getSelectedItem()));
+                            funcionario, nameDb);
                     DefaultTableModel model = (DefaultTableModel) tbPonto.getModel();
                     model.setNumRows(0);
 
@@ -297,8 +295,10 @@ public class TelaImportExcel extends javax.swing.JFrame {
                         model.addRow(linha);
                     }
 
+                    //imprimir soma hora extra
                     String[] str = ponto.getSomaHoraExtra().split(":");
                     String horaFormatada = controlePonto.formatarHoraNegativa(Long.valueOf(str[0]), Long.valueOf(str[1]));
+                    
                     int verificador = ponto.getSomaHoraExtra().indexOf("-", 0);
                     if (verificador == 0) {
                         txtHorasExtras.setForeground(Color.red);
@@ -307,10 +307,8 @@ public class TelaImportExcel extends javax.swing.JFrame {
                         txtHorasExtras.setForeground(Color.BLUE);
                     }
                     txtHorasExtras.setText(horaFormatada);
+                    //imprime hora trabalhada
                     txtHoraTrabalhada.setText(ponto.getSomaHoraTrabalhada());
-
-                    //ID do funcionario
-                    ponto.setFuncionario(funcionario);
 
                     //ADICIONAR
                     pontoMes = new PontoMes();
@@ -318,14 +316,14 @@ public class TelaImportExcel extends javax.swing.JFrame {
                     pontoMes.setSomaHoraExtra(ponto.getSomaHoraExtra());
                     pontoMes.setSaldo(ponto.getSomaHoraExtra());
                     pontoMes.setAno(year);
-                    pontoMes.setMes(month);
+                    pontoMes.setMes(month+1);
 
                     ponto.setPontoMes(pontoMes);
 
                 } catch (IOException ex) {
-                    Logger.getLogger(TelaImportExcel.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(TelaImportExcelManual.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (ParseException ex) {
-                    Logger.getLogger(TelaImportExcel.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(TelaImportExcelManual.class.getName()).log(Level.SEVERE, null, ex);
                 }
             } else {
                 JOptionPane.showMessageDialog(this, "Selecione os campos para continuar!");
@@ -356,12 +354,14 @@ public class TelaImportExcel extends javax.swing.JFrame {
                 }
                 ponto.setPontoMes(pontoMes);
                 pontoDao.salvaPonto(listaControlePonto, ponto, nameDb);
+                
+                JOptionPane.showMessageDialog(this, "Salvo com sucesso!");
             } catch (ClassNotFoundException ex) {
-                Logger.getLogger(TelaImportExcel.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(TelaImportExcelManual.class.getName()).log(Level.SEVERE, null, ex);
             } catch (SQLException ex) {
-                Logger.getLogger(TelaImportExcel.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(TelaImportExcelManual.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ParseException ex) {
-                Logger.getLogger(TelaImportExcel.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(TelaImportExcelManual.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         } else {
@@ -388,14 +388,16 @@ public class TelaImportExcel extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TelaImportExcel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaImportExcelManual.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TelaImportExcel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaImportExcelManual.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TelaImportExcel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaImportExcelManual.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TelaImportExcel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaImportExcelManual.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
@@ -403,11 +405,11 @@ public class TelaImportExcel extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    new TelaImportExcel().setVisible(true);
+                    new TelaImportExcelManual().setVisible(true);
                 } catch (SQLException ex) {
-                    Logger.getLogger(TelaImportExcel.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(TelaImportExcelManual.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (ClassNotFoundException ex) {
-                    Logger.getLogger(TelaImportExcel.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(TelaImportExcelManual.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
