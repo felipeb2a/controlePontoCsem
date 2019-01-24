@@ -288,11 +288,11 @@ public class TelaImportExcel extends javax.swing.JFrame {
                         Object linha[]
                                 = {ponto.getDiaSemana(),
                                     controlePonto.formatDataReturnString(ponto.getDia()),
-                                    controlePonto.convertDateTime(ponto.getEntrada()),
-                                    controlePonto.convertDateTime(ponto.getSaidaIntervalo()),
-                                    controlePonto.convertDateTime(ponto.getEntradaIntervalo()),
-                                    controlePonto.convertDateTime(ponto.getSaida()),
-                                    controlePonto.convertDateTime(ponto.getHorasTrabalhadas()),
+                                    ponto.getEntrada(),
+                                    ponto.getSaidaIntervalo(),
+                                    ponto.getEntradaIntervalo(),
+                                    ponto.getSaida(),
+                                    ponto.getHorasTrabalhadas(),
                                     ponto.getHoraExtraFomatada()};
                         model.addRow(linha);
                     }
@@ -304,7 +304,7 @@ public class TelaImportExcel extends javax.swing.JFrame {
                         txtHorasExtras.setForeground(Color.red);
                     }
                     if (verificador == -1) {
-                        txtHorasExtras.setForeground(Color.green);
+                        txtHorasExtras.setForeground(Color.BLUE);
                     }
                     txtHorasExtras.setText(horaFormatada);
                     txtHoraTrabalhada.setText(ponto.getSomaHoraTrabalhada());

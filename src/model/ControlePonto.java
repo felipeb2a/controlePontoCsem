@@ -124,8 +124,7 @@ public class ControlePonto {
         c.set(Calendar.DAY_OF_MONTH, dia);
         c.set(Calendar.MONTH, mes);
         c.set(Calendar.YEAR, ano);
-        c.set(Calendar.HOUR, 2);
-        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.HOUR, 0);
         c.set(Calendar.MINUTE, 0);
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 0);
@@ -224,10 +223,9 @@ public class ControlePonto {
                     / 60000);
 
             // convert horas trabalhadas;
-            ponto.setHorasTrabalhadas(formatDataHora(ponto.getDia(),
-                    convertStringTime(horas + ":" + minutos)));
+            ponto.setHorasTrabalhadas(convertStringTime(horas + ":" + minutos));
 
-        } catch (ParseException | NullPointerException ex) {
+        } catch (NullPointerException ex) {
             System.out.println(getClass().getName() + "\n" + ex);
         }
         return ponto;
@@ -248,9 +246,9 @@ public class ControlePonto {
                 ponto.setHoraExtraFomatada("00:00");
             } else {
                 // hora extra
-                horaExtra = (ponto.getHorasTrabalhadas().getTime() - ponto.jornadaDeTrabalho(ponto).getTime()) / 3600000;
+                horaExtra = (ponto.getHorasTrabalhadas().getTime() - ponto.jornadaDeTrabalho().getTime()) / 3600000;
                 // minutos
-                minutoExtra = (((ponto.getHorasTrabalhadas().getTime() - ponto.jornadaDeTrabalho(ponto).getTime())
+                minutoExtra = (((ponto.getHorasTrabalhadas().getTime() - ponto.jornadaDeTrabalho().getTime())
                         - horaExtra * 3600000)
                         / 60000);
 

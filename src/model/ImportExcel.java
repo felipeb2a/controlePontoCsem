@@ -116,27 +116,21 @@ public class ImportExcel {
                     //Date data = null;
                     try {
                         ponto = controlePonto.formatDataInt(dia, mes, ano);
-                        controlePonto.formatDataTimeInt(dia, mes, ano);
                     } catch (ParseException ex) {
                         Logger.getLogger(ImportExcel.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
                 if (x == 1) {
-                    ponto.setEntrada(controlePonto.formatDataHora(ponto.getDia(), 
-                            controlePonto.convertStringTime(array[i][x])));
-//                    System.out.println(ponto.getDia() +" - " + array[i][x]);
+                    ponto.setEntrada(controlePonto.convertStringTime(array[i][x]));
                 }
                 if (x == 2) {
-                    ponto.setSaidaIntervalo(controlePonto.formatDataHora(ponto.getDia(),
-                            controlePonto.convertStringTime(array[i][x])));
+                    ponto.setSaidaIntervalo(controlePonto.convertStringTime(array[i][x]));
                 }
                 if (x == 3) {
-                    ponto.setEntradaIntervalo(controlePonto.formatDataHora(ponto.getDia(),
-                            controlePonto.convertStringTime(array[i][x])));
+                    ponto.setEntradaIntervalo(controlePonto.convertStringTime(array[i][x]));
                 }
                 if (x == 4) {
-                    ponto.setSaida(controlePonto.formatDataHora(ponto.getDia(),
-                            controlePonto.convertStringTime(array[i][x])));
+                    ponto.setSaida(controlePonto.convertStringTime(array[i][x]));
                 }
             }
 

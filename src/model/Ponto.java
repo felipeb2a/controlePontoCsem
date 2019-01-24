@@ -5,15 +5,10 @@
  */
 package model;
 
-import java.util.Calendar;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.sql.Time;
-import java.text.DateFormatSymbols;
-import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -24,20 +19,20 @@ public class Ponto {
     private int id;
     private Date dia;
     private String diaSemana;
-    private Date entrada;
-    private Date saidaIntervalo;
-    private Date entradaIntervalo;
-    private Date saida;
+    private Time entrada;
+    private Time saidaIntervalo;
+    private Time entradaIntervalo;
+    private Time saida;
     private long horaE;
     private long minutoE;
-    private Date horasTrabalhadas;
+    private Time horasTrabalhadas;
     private String somaHoraTrabalhada;
     private String horaExtraFomatada;
     private String somaHoraExtra;
     private String compensaHora;
     private String saldo;
     private String motivo;
-    private Date jornadaDeTrabalho;
+    private Time jornadaDeTrabalho;
     private Funcionario funcionario;
     private PontoMes pontoMes;
 
@@ -65,35 +60,35 @@ public class Ponto {
         this.diaSemana = diaSemana;
     }
 
-    public Date getEntrada() {
+    public Time getEntrada() {
         return entrada;
     }
 
-    public void setEntrada(Date entrada) {
+    public void setEntrada(Time entrada) {
         this.entrada = entrada;
     }
 
-    public Date getSaidaIntervalo() {
+    public Time getSaidaIntervalo() {
         return saidaIntervalo;
     }
 
-    public void setSaidaIntervalo(Date saidaIntervalo) {
+    public void setSaidaIntervalo(Time saidaIntervalo) {
         this.saidaIntervalo = saidaIntervalo;
     }
 
-    public Date getEntradaIntervalo() {
+    public Time getEntradaIntervalo() {
         return entradaIntervalo;
     }
 
-    public void setEntradaIntervalo(Date entradaIntervalo) {
+    public void setEntradaIntervalo(Time entradaIntervalo) {
         this.entradaIntervalo = entradaIntervalo;
     }
 
-    public Date getSaida() {
+    public Time getSaida() {
         return saida;
     }
 
-    public void setSaida(Date saida) {
+    public void setSaida(Time saida) {
         this.saida = saida;
     }
 
@@ -113,11 +108,11 @@ public class Ponto {
         this.minutoE = minutoE;
     }
 
-    public Date getHorasTrabalhadas() {
+    public Time getHorasTrabalhadas() {
         return horasTrabalhadas;
     }
 
-    public void setHorasTrabalhadas(Date horasTrabalhadas) {
+    public void setHorasTrabalhadas(Time horasTrabalhadas) {
         this.horasTrabalhadas = horasTrabalhadas;
     }
 
@@ -169,16 +164,15 @@ public class Ponto {
         this.motivo = motivo;
     }
 
-    public Date jornadaDeTrabalho(Ponto ponto) throws ParseException {
-        ControlePonto controlePonto = new ControlePonto();
+    
+
+    public Time jornadaDeTrabalho() throws ParseException {
         SimpleDateFormat format = new SimpleDateFormat("HH:mm");
-        ponto.getDia();
         String hora = "08:48";
         Date data = (Date) format.parse(hora);
         Time time = new Time(data.getTime());
-        data = controlePonto.formatDataHora(ponto.getDia(), time);
-
-        return data;
+        System.out.println(time);
+        return time;
     }
 
     public Funcionario getFuncionario() {
