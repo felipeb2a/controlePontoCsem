@@ -32,7 +32,10 @@ public class FuncionarioDAO extends AcessDB {
         while (resultado.next()) {
             Funcionario funcionarioRetorno;
             funcionarioRetorno = new Funcionario();
+            funcionarioRetorno.setId(resultado.getInt("idFuncionario"));
             funcionarioRetorno.setNome(resultado.getString("nome"));
+            funcionarioRetorno.setCargo(resultado.getString("cargo"));
+            funcionarioRetorno.setJornadaDeTrabalho(resultado.getDate("jornadaDeTrabalho"));
 
             funcionarioList.add(funcionarioRetorno);
         }

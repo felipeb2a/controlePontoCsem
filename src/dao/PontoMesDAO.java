@@ -13,35 +13,33 @@ import model.PontoMes;
  *
  * @author felipe.ferreira
  */
-public class PontoMesDAO extends AcessDB{
-    public void salvaPontoMes(List<PontoMes> pontoList, String nameDb) throws ClassNotFoundException, SQLException, ParseException {
+public class PontoMesDAO extends AcessDB {
+
+    public void salvaPontoMes(PontoMes pontoMes, String nameDb) throws ClassNotFoundException, SQLException, ParseException {
         Connection conexao = conectar(nameDb);
-        for (Iterator it = pontoList.iterator(); it.hasNext();) {
 
-            PontoMes pontoMes = new PontoMes();
+        String sql = "insert into pontomes values(?,?,?,?,?,?)";
 
-            String sql = "insert into pontoMes values(?,?,?,?,?,?)";
+        PreparedStatement stmt = conexao.prepareStatement(sql);
+        //SEQUENCIA
+        //<-----------------------------------
+        int seq = obterProximoValorSequence(nameDb);
 
-            PreparedStatement stmt = conexao.prepareStatement(sql);
-            //SEQUENCIA
-            //<-----------------------------------
-            int seq = obterProximoValorSequence(nameDb);
+        //alterando objeto
+        pontoMes.setId(seq);
 
-            //alterando objeto
-            pontoMes.setId(seq);
+        stmt.setInt(1, pontoMes.getId());
+        //----------------------------------->
 
-            stmt.setInt(1, pontoMes.getId());
-            //----------------------------------->
+        stmt.setString(2, pontoMes.getSomaHoraTrabalhada());
+        stmt.setString(3, pontoMes.getSomaHoraExtra());
+        stmt.setString(4, pontoMes.getSaldo());
+        stmt.setInt(5, pontoMes.getMes());
+        stmt.setInt(6, pontoMes.getAno());
 
-            stmt.setString(2, pontoMes.getSomaHoraTrabalhada());
-            stmt.setString(3, pontoMes.getSomaHoraExtra());
-            stmt.setString(4, pontoMes.getSaldo());
-            stmt.setInt(5, pontoMes.getMes());
-            stmt.setInt(6, pontoMes.getAno());
+        stmt.execute();
+        stmt.close();
 
-            stmt.execute();
-            stmt.close();
-        }
     }
 
     //OBTER SEQUENCIA MYSQL
@@ -55,7 +53,7 @@ public class PontoMesDAO extends AcessDB{
         Connection conexao = conectar(nameDb);
 
         // contruindo a consulta
-        String sql = "select * from pontoMes order by idPonto";
+        String sql = "select * from pontomes order by idPontoMes";
 
         // criando o objeto que vai executar a consulta no banco
         PreparedStatement stm = conexao.prepareStatement(sql);

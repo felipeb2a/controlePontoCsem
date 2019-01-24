@@ -43,16 +43,20 @@ public class Funcionario {
     public Date getJornadaDeTrabalho() {
         return jornadaDeTrabalho;
     }
-
-    public Date setJornadaDeTrabalho(Ponto ponto) throws ParseException {
-        ControlePonto controlePonto = new ControlePonto();
-        SimpleDateFormat format = new SimpleDateFormat("HH:mm");
-        ponto.getDia();
-        String hora = "08:48";
-        Date data = (Date) format.parse(hora);
-        Time time = new Time(data.getTime());
-        data = controlePonto.formatDataHora(ponto.getDia(), time);
-
-        return data;
+    
+    public void setJornadaDeTrabalho(Date jornadaDeTrabalho) {
+        this.jornadaDeTrabalho = jornadaDeTrabalho;
     }
+
+//    public Date setJornadaDeTrabalho(Ponto ponto) throws ParseException {
+//        ControlePonto controlePonto = new ControlePonto();
+//        SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+//        ponto.getDia();
+//        String hora = "08:48";
+//        Date data = (Date) format.parse(hora);
+//        Time time = new Time(data.getTime());
+//        data = controlePonto.formatDataHora(ponto.getDia(), time);
+//
+//        return data;
+//    }
 }
