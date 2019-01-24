@@ -38,7 +38,7 @@ import model.PontoMes;
  *
  * @author felipe.ferreira
  */
-public class TelaImportExcelManual extends javax.swing.JFrame {
+public class TelaImportExcelManualSubtrairHoras extends javax.swing.JFrame {
 
     //VARIAVEIS GLOBAIS
     private ArrayList mostrarTela = new ArrayList();
@@ -49,7 +49,7 @@ public class TelaImportExcelManual extends javax.swing.JFrame {
     PontoMes pontoMes;
     Funcionario funcionario;
 
-    public TelaImportExcelManual() throws SQLException, ClassNotFoundException {
+    public TelaImportExcelManualSubtrairHoras() throws SQLException, ClassNotFoundException {
         initComponents();
         MaximizeTela();
     }
@@ -58,7 +58,6 @@ public class TelaImportExcelManual extends javax.swing.JFrame {
     public void mostrarTela(ArrayList Tela) {
         this.setVisible(true);
         this.mostrarTela = Tela;
-        icone();
     }
 
     //ALTERAR ICONE JAVA
@@ -168,7 +167,7 @@ public class TelaImportExcelManual extends javax.swing.JFrame {
         cbFuncionario.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione" }));
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jLabel2.setText("SELECIONE O FUNCIONARIO");
+        jLabel2.setText("TELA 2");
 
         btSalvar.setFont(new java.awt.Font("Tahoma", 1, 16)); // NOI18N
         btSalvar.setText("SALVAR");
@@ -320,9 +319,9 @@ public class TelaImportExcelManual extends javax.swing.JFrame {
                     ponto.setPontoMes(pontoMes);
 
                 } catch (IOException ex) {
-                    Logger.getLogger(TelaImportExcelManual.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(TelaImportExcelManualSubtrairHoras.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (ParseException ex) {
-                    Logger.getLogger(TelaImportExcelManual.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(TelaImportExcelManualSubtrairHoras.class.getName()).log(Level.SEVERE, null, ex);
                 }
             } else {
                 JOptionPane.showMessageDialog(this, "Selecione os campos para continuar!");
@@ -356,11 +355,11 @@ public class TelaImportExcelManual extends javax.swing.JFrame {
                 
                 JOptionPane.showMessageDialog(this, "Salvo com sucesso!");
             } catch (ClassNotFoundException ex) {
-                Logger.getLogger(TelaImportExcelManual.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(TelaImportExcelManualSubtrairHoras.class.getName()).log(Level.SEVERE, null, ex);
             } catch (SQLException ex) {
-                Logger.getLogger(TelaImportExcelManual.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(TelaImportExcelManualSubtrairHoras.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ParseException ex) {
-                Logger.getLogger(TelaImportExcelManual.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(TelaImportExcelManualSubtrairHoras.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         } else {
@@ -387,14 +386,18 @@ public class TelaImportExcelManual extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TelaImportExcelManual.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaImportExcelManualSubtrairHoras.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TelaImportExcelManual.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaImportExcelManualSubtrairHoras.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TelaImportExcelManual.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaImportExcelManualSubtrairHoras.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TelaImportExcelManual.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaImportExcelManualSubtrairHoras.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -404,11 +407,11 @@ public class TelaImportExcelManual extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    new TelaImportExcelManual().setVisible(true);
+                    new TelaImportExcelManualSubtrairHoras().setVisible(true);
                 } catch (SQLException ex) {
-                    Logger.getLogger(TelaImportExcelManual.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(TelaImportExcelManualSubtrairHoras.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (ClassNotFoundException ex) {
-                    Logger.getLogger(TelaImportExcelManual.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(TelaImportExcelManualSubtrairHoras.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
