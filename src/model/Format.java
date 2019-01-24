@@ -24,7 +24,8 @@ public class Format {
 
     //CONVERT LOCALDATETIME SQL
     public static Timestamp convertLocalDataTimeSql(LocalDateTime ldt) throws ParseException {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter dtf = 
+                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         Timestamp ts = Timestamp.valueOf(ldt);
         return ts;
     }
