@@ -256,7 +256,7 @@ public class TelaImportExcelManualSubtrairHoras extends javax.swing.JFrame {
             c1.set(Calendar.MONTH, cbMes.getMonth());
             controlePonto = new ControlePonto();
             String mes = controlePonto.month(c1);
-            
+
             //CONFIRMAR DADOS
             Object[] options = {"Confirmar", "Cancelar"};
             int opcao = JOptionPane.showOptionDialog(null, "Clique Confirmar para continuar! \n" + "\n MÊS: " + mes
@@ -265,7 +265,7 @@ public class TelaImportExcelManualSubtrairHoras extends javax.swing.JFrame {
                 int month = cbMes.getMonth();
                 int year = cbAno.getYear();
                 funcionario.setNome((String) cbFuncionario.getSelectedItem());
-                
+
                 //DEFINIR TAMANHO DA ARRAY
                 String[][] array = new String[33][5];
 
@@ -273,6 +273,26 @@ public class TelaImportExcelManualSubtrairHoras extends javax.swing.JFrame {
                 ImportExcel excel = new ImportExcel();
                 ponto = new Ponto();
                 try {
+
+                    //buscar ponto mes anterior
+                    PontoDAO pontoDao = new PontoDAO();
+                    Ponto pontoMesAnterior = new Ponto();
+                    pontoMesAnterior.setFuncionario(funcionario);
+                    PontoMes pontoMes = new PontoMes();
+                    pontoMes.setMes(month);
+                    pontoMesAnterior.setPontoMes(pontoMes);
+
+                    //buscar ponto mes para verificar hora extra positiva ou negativa
+                    pontoMesAnterior = pontoDao.obterPonto(pontoMesAnterior, nameDb);
+                    String horaExtraStr = pontoMesAnterior.getPontoMes().getSaldo();
+
+                    int verificaHoraNegativa = horaExtraStr.indexOf("-", 0);
+                    if (verificaHoraNegativa == -1) {
+                        System.out.println("Não tem hora para compensar");
+                    } else {
+                       List<Ponto> pontoMesAnteriorList = pontoDao.ObterListPontoMes(ponto, nameDb);
+                    }
+
                     listaControlePonto = excel.carregarPontoExcelVerificaMesAnterior(cbMes.getMonth(), cbAno.getYear(),
                             funcionario, nameDb);
                     DefaultTableModel model = (DefaultTableModel) tbPonto.getModel();
@@ -296,7 +316,7 @@ public class TelaImportExcelManualSubtrairHoras extends javax.swing.JFrame {
                     //imprimir soma hora extra
                     String[] str = ponto.getSomaHoraExtra().split(":");
                     String horaFormatada = controlePonto.formatarHoraNegativa(Long.valueOf(str[0]), Long.valueOf(str[1]));
-                    
+
                     int verificador = ponto.getSomaHoraExtra().indexOf("-", 0);
                     if (verificador == 0) {
                         txtHorasExtras.setForeground(Color.red);
@@ -314,7 +334,7 @@ public class TelaImportExcelManualSubtrairHoras extends javax.swing.JFrame {
                     pontoMes.setSomaHoraExtra(ponto.getSomaHoraExtra());
                     pontoMes.setSaldo(ponto.getSomaHoraExtra());
                     pontoMes.setAno(year);
-                    pontoMes.setMes(month+1);
+                    pontoMes.setMes(month + 1);
 
                     ponto.setPontoMes(pontoMes);
 
@@ -351,12 +371,12 @@ public class TelaImportExcelManualSubtrairHoras extends javax.swing.JFrame {
             try {
                 //salva pontoMes
                 pontoMesDao.salvaPontoMes(pontoMes, nameDb);
-                if(pontoMes.getId() == 0){
+                if (pontoMes.getId() == 0) {
                     pontoMes.setId(1);
                 }
                 ponto.setPontoMes(pontoMes);
                 pontoDao.salvaPonto(listaControlePonto, ponto, nameDb);
-                
+
                 JOptionPane.showMessageDialog(this, "Salvo com sucesso!");
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(TelaImportExcelManualSubtrairHoras.class.getName()).log(Level.SEVERE, null, ex);
