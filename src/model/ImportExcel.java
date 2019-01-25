@@ -202,25 +202,25 @@ public class ImportExcel {
             Logger.getLogger(ImportExcel.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        //buscar ponto mes anterior
-        PontoDAO pontoDao = new PontoDAO();
-        ponto = new Ponto();
-        ponto.setFuncionario(funcionario);
-        PontoMes pontoMes = new PontoMes();
-        pontoMes.setMes(mesPadrao - 1);
-        pontoMes.setAno(ano);
-        ponto.setPontoMes(pontoMes);
-
-        //buscar ponto mes para verificar hora extra positiva ou negativa
-        pontoMesAnterior = pontoDao.obterPonto(ponto, nameDb);
-        String horaExtraStr = pontoMesAnterior.getPontoMes().getSaldo();
-
-        int verificaHoraNegativa = horaExtraStr.indexOf("-", 0);
-        if (verificaHoraNegativa == -1) {
-            System.out.println("Não tem hora para compensar");
-        } else {
-            pontoMesAnteriorList = pontoDao.ObterListPontoMes(ponto, nameDb);
-        }
+//        //buscar ponto mes anterior
+//        PontoDAO pontoDao = new PontoDAO();
+//        ponto = new Ponto();
+//        ponto.setFuncionario(funcionario);
+//        PontoMes pontoMes = new PontoMes();
+//        pontoMes.setMes(mesPadrao - 1);
+//        pontoMes.setAno(ano);
+//        ponto.setPontoMes(pontoMes);
+//
+//        //buscar ponto mes para verificar hora extra positiva ou negativa
+//        pontoMesAnterior = pontoDao.obterPonto(ponto, nameDb);
+//        String horaExtraStr = pontoMesAnterior.getPontoMes().getSaldo();
+//
+//        int verificaHoraNegativa = horaExtraStr.indexOf("-", 0);
+//        if (verificaHoraNegativa == -1) {
+//            System.out.println("Não tem hora para compensar");
+//        } else {
+//            pontoMesAnteriorList = pontoDao.ObterListPontoMes(ponto, nameDb);
+//        }
 
         //hora format
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
