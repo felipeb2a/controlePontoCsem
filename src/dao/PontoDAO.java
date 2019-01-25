@@ -49,28 +49,29 @@ public class PontoDAO extends AcessDB {
     }
 
     public Ponto obterPonto(Ponto ponto, String dbName) throws SQLException, ClassNotFoundException, ParseException {
-        Format format = new Format();
-        // lista de retorno
+        // objeto de retorno
         Ponto pontoRetorno = new Ponto();
 
         // conectando ao banco de dados
         Connection conexao = conectar(dbName);
 
         // contruindo a consulta
-        String sql = "select * from funcionario f where f.nome = ?";
+        String sql = "select * from ponto p inner join pontomes pm on pm.idPontoMes = p.fkPontoMes inner join funcionario f on f.idFuncionario = p.fkFuncionario  where pm.mes = ?  and f.idFuncionario = ?";
 
         // criando o objeto que vai executar a consulta no banco
         PreparedStatement stm = conexao.prepareStatement(sql);
 
         //passando os parametros para a consulta
-        stm.setTimestamp(1,  format.convertDataTimeSql(ponto.getDia()));
+        System.out.println(ponto.getFuncionario().getId()+ "\n" + ponto.getPontoMes().getMes());
+        stm.setInt(1,  ponto.getPontoMes().getMes());
+        stm.setInt(2,  ponto.getFuncionario().getId());
 
         // recebendo o resultado da consulta
         ResultSet resultado = stm.executeQuery();
 
         //chamar metodo lista funcionario
         pontoRetorno = consultaPonto(resultado);
-
+        
         // Encerrando a conexão.
         conexao.close();
         return pontoRetorno;
@@ -105,6 +106,7 @@ public class PontoDAO extends AcessDB {
             pontoMes.setSaldo(resultado.getString("saldo"));            
             pontoMes.setMes(resultado.getInt("mes"));
             pontoMes.setAno(resultado.getInt("ano"));
+            pontoRetorno.setPontoMes(pontoMes);
             
             //funcionario
             Funcionario funcionario = new Funcionario();
@@ -112,7 +114,8 @@ public class PontoDAO extends AcessDB {
             funcionario.setNome(resultado.getString("nome"));
             funcionario.setCargo(resultado.getString("cargo"));
             funcionario.setJornadaDeTrabalho(resultado.getTime("jornadaDeTrabalho"));
-
+            pontoRetorno.setFuncionario(funcionario);
+            
             pontoList.add(pontoRetorno);
         }
 
@@ -122,6 +125,7 @@ public class PontoDAO extends AcessDB {
     public Ponto consultaPonto(ResultSet resultado) throws SQLException, ClassNotFoundException {
 
         Ponto pontoRetorno = new Ponto();
+        
         // criando objeto de retorno
         while (resultado.next()) {
             pontoRetorno = new Ponto();
@@ -145,6 +149,7 @@ public class PontoDAO extends AcessDB {
             pontoMes.setSaldo(resultado.getString("saldo"));            
             pontoMes.setMes(resultado.getInt("mes"));
             pontoMes.setAno(resultado.getInt("ano"));
+            pontoRetorno.setPontoMes(pontoMes);
             
             //funcionario
             Funcionario funcionario = new Funcionario();
@@ -152,6 +157,7 @@ public class PontoDAO extends AcessDB {
             funcionario.setNome(resultado.getString("nome"));
             funcionario.setCargo(resultado.getString("cargo"));
             funcionario.setJornadaDeTrabalho(resultado.getTime("jornadaDeTrabalho"));
+            pontoRetorno.setFuncionario(funcionario);
             
         }
 

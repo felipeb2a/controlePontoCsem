@@ -322,6 +322,10 @@ public class TelaImportExcelManualSubtrairHoras extends javax.swing.JFrame {
                     Logger.getLogger(TelaImportExcelManualSubtrairHoras.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (ParseException ex) {
                     Logger.getLogger(TelaImportExcelManualSubtrairHoras.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SQLException ex) {
+                    Logger.getLogger(TelaImportExcelManualSubtrairHoras.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(TelaImportExcelManualSubtrairHoras.class.getName()).log(Level.SEVERE, null, ex);
                 }
             } else {
                 JOptionPane.showMessageDialog(this, "Selecione os campos para continuar!");

@@ -6,6 +6,8 @@
 package model;
 
 import dao.FuncionarioDAO;
+import dao.PontoDAO;
+import dao.PontoMesDAO;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -84,7 +86,7 @@ public class ImportExcel {
                             String subStr = dia.substring(0, 2);
                             array[i][x] = subStr;
                         }
-                    }else if (x > 0 && x < 7) {
+                    } else if (x > 0 && x < 7) {
                         row = worksheet.getRow(i);
                         Date hora = row.getCell(x).getDateCellValue();
                         String horaJ = sdf.format(hora);
@@ -151,10 +153,10 @@ public class ImportExcel {
             //soma hora extra
             long horaExtra = ponto.getHoraE();
             long minutoExtra = ponto.getMinutoE();
-            somaHoraExtraFinal = controlePonto.somaHoraLong(horaExtra, minutoExtra, somaHoraExtraFinal);           
+            somaHoraExtraFinal = controlePonto.somaHoraLong(horaExtra, minutoExtra, somaHoraExtraFinal);
             ponto.setSomaHoraExtra(somaHoraExtraFinal);
 //            System.out.println("Hora: " + horaExtra + " | Minuto: " + minutoExtra + " | HoraExtraFinal: " + somaHoraExtraFinal);
-            
+
             //adicionar funcionario            
             try {
                 FuncionarioDAO funcionarioDao = new FuncionarioDAO();
@@ -164,7 +166,7 @@ public class ImportExcel {
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(ImportExcel.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+
             ponto.setFuncionario(funcionario);
             pontoList.add(ponto);
         }
@@ -173,26 +175,57 @@ public class ImportExcel {
 //        }
         return pontoList;
     }
-    
-    public List<Ponto> carregarPontoExcelVerificaMesAnterior(int mes, int ano, Funcionario funcionario, String nameDb) throws FileNotFoundException, IOException, ParseException {
 
-        ControlePonto controlePonto = new ControlePonto();        
+    public List<Ponto> carregarPontoExcelVerificaMesAnterior(int mes, int ano, Funcionario funcionario, String nameDb) throws FileNotFoundException, IOException, ParseException, SQLException, ClassNotFoundException {
+        //adicionar + 1 para o mes ficar de 1 a 12
+        int mesPadrao = mes + 1;
+        
+        ControlePonto controlePonto = new ControlePonto();
         //verifica ano bissexto
         boolean bissexto;
         bissexto = controlePonto.verificaAnoBissexto(ano);
-        
-        
-        
+
         //list
         List<Ponto> pontoList = new ArrayList();
+        List<Ponto> pontoMesAnteriorList = new ArrayList();
+
         //object
         Ponto ponto;
+        Ponto pontoMesAnterior;
+
+        try {
+            FuncionarioDAO funcionarioDao = new FuncionarioDAO();
+            funcionario = funcionarioDao.obterNomeFuncionario(funcionario, nameDb);
+        } catch (SQLException ex) {
+            Logger.getLogger(ImportExcel.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(ImportExcel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        //buscar ponto mes anterior
+        PontoDAO pontoDao = new PontoDAO();
+        ponto = new Ponto();
+        ponto.setFuncionario(funcionario);
+        PontoMes pontoMes = new PontoMes();
+        pontoMes.setMes(mesPadrao - 1);
+        pontoMes.setAno(ano);
+        ponto.setPontoMes(pontoMes);
+
+        //buscar ponto mes para verificar hora extra positiva ou negativa
+        pontoMesAnterior = pontoDao.obterPonto(ponto, nameDb);
+        String horaExtraStr = pontoMesAnterior.getPontoMes().getSaldo();
+        
+        int verificaHoraNegativa = horaExtraStr.indexOf("-");
+        if (verificaHoraNegativa == 0) {
+            System.out.println("Não tem hora para compensar");
+        } else {
+            pontoMesAnteriorList = pontoDao.ObterListPontoMes(ponto, nameDb);
+        }
 
         //hora format
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 
         // local do arquivo
-        int mesPadrao = mes + 1;
         String path = FilesPath.getPastaPontoCsem() + mesPadrao + ".xls";
         String filename = path;
         //carregar arquivo
@@ -235,7 +268,7 @@ public class ImportExcel {
                             String subStr = dia.substring(0, 2);
                             array[i][x] = subStr;
                         }
-                    }else if (x > 0 && x < 7) {
+                    } else if (x > 0 && x < 7) {
                         row = worksheet.getRow(i);
                         Date hora = row.getCell(x).getDateCellValue();
                         String horaJ = sdf.format(hora);
@@ -301,20 +334,11 @@ public class ImportExcel {
             //soma hora extra
             long horaExtra = ponto.getHoraE();
             long minutoExtra = ponto.getMinutoE();
-            somaHoraExtraFinal = controlePonto.somaHoraLong(horaExtra, minutoExtra, somaHoraExtraFinal);           
+            somaHoraExtraFinal = controlePonto.somaHoraLong(horaExtra, minutoExtra, somaHoraExtraFinal);
             ponto.setSomaHoraExtra(somaHoraExtraFinal);
 //            System.out.println("Hora: " + horaExtra + " | Minuto: " + minutoExtra + " | HoraExtraFinal: " + somaHoraExtraFinal);
-            
+
             //adicionar funcionario            
-            try {
-                FuncionarioDAO funcionarioDao = new FuncionarioDAO();
-                funcionario = funcionarioDao.obterNomeFuncionario(funcionario, nameDb);
-            } catch (SQLException ex) {
-                Logger.getLogger(ImportExcel.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(ImportExcel.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
             ponto.setFuncionario(funcionario);
             pontoList.add(ponto);
         }
