@@ -23,6 +23,7 @@ import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
@@ -43,7 +44,7 @@ public class TelaImportExcelManualSubtrairHoras extends javax.swing.JFrame {
     //VARIAVEIS GLOBAIS
     private ArrayList mostrarTela = new ArrayList();
     private String nameDb;
-    List listaControlePonto;
+    List<Ponto> listaControlePonto;
     ControlePonto controlePonto;
     Ponto ponto;
     PontoMes pontoMes;
@@ -286,21 +287,77 @@ public class TelaImportExcelManualSubtrairHoras extends javax.swing.JFrame {
                     pontoMesAnterior = pontoDao.obterPonto(pontoMesAnterior, nameDb);
                     String horaExtraStr = pontoMesAnterior.getPontoMes().getSaldo();
 
-                    int verificaHoraNegativa = horaExtraStr.indexOf("-", 0);
-                    if (verificaHoraNegativa == -1) {
-                        System.out.println("Não tem hora para compensar");
-                    } else {
-                       List<Ponto> pontoMesAnteriorList = pontoDao.ObterListPontoMes(ponto, nameDb);
-                    }
+//                    int verificaHoraNegativa = horaExtraStr.indexOf("-", 0);
+//                    if (verificaHoraNegativa == -1) {
+//                        System.out.println("Não tem hora para compensar");
+//                    } else {
+                    List<Ponto> pontoMesAnteriorList = pontoDao.ObterListPontoMes(pontoMesAnterior, nameDb);
+//                    }
 
                     listaControlePonto = excel.carregarPontoExcelVerificaMesAnterior(cbMes.getMonth(), cbAno.getYear(),
                             funcionario, nameDb);
                     DefaultTableModel model = (DefaultTableModel) tbPonto.getModel();
                     model.setNumRows(0);
 
-                    for (Iterator it = listaControlePonto.iterator(); it.hasNext();) {
+                    Date[] dia = new Date[31];
+                    long[] hora = new long[31];
+                    long[] minuto = new long[31];
+                    boolean[] compensar = new boolean[31];
 
+                    for (Iterator it = listaControlePonto.iterator(); it.hasNext();) {
+                        int i = 1;
                         ponto = (Ponto) it.next();
+
+                        hora[i] = ponto.getHoraE();
+                        minuto[i] = ponto.getMinutoE();
+                        dia[i] = ponto.getDia();
+
+                        if (hora[i] < 0 || minuto[i] < 0) {
+                            compensar[i] = true;
+                        } else {
+                            compensar[i] = false;
+                        }
+
+//                        System.out.println("dia: "+ dia[i] + "hora: "+hora[i] + " | minuto: "+minuto[i]+ " | compensar: "+compensar[i]);
+                    }
+
+                    for (int i = 0; i < hora.length; i++) {
+                        System.out.println("for: "+compensar[i]);
+                        if (compensar[i] == false) {
+                            long horaPositiva = hora[i];
+                            long minutoPositivo = minuto[i];
+                            for (int x = 0; x < hora.length; x++) {
+                                if (compensar[i] == true) {
+                                    long horaNegativa = hora[i];
+                                    long minutoNegativo = minuto[i];
+                                    while (horaNegativa != 0 || horaPositiva != 0) {
+                                        if (horaPositiva + horaNegativa < 0) {
+                                            horaNegativa = ((horaNegativa * -1) - horaPositiva) * -1;
+                                            horaPositiva = 0;
+                                        } else {
+                                            horaPositiva = horaPositiva + horaNegativa;
+                                            horaNegativa = 0;
+                                        }
+                                    }
+                                    while (minutoNegativo != 0 || minutoPositivo != 0) {
+                                        if (minutoPositivo + minutoNegativo < 0) {
+                                            minutoNegativo = ((minutoNegativo * -1) - minutoPositivo) * -1;
+                                            minutoPositivo = 0;
+                                        } else {
+                                            minutoPositivo = minutoPositivo + minutoNegativo;
+                                            minutoNegativo = 0;
+                                        }
+                                    }
+                                    System.out.println("hora Positiva: "+horaPositiva+" | hora Negativa: " +horaNegativa+" | Minuto Positivo: "+ minutoPositivo+" | Minuto Negativo: "+minutoNegativo);
+                                }
+                                break;
+                            }
+                        }
+                    }
+
+                    for (Iterator it = listaControlePonto.iterator(); it.hasNext();) {
+                        ponto = (Ponto) it.next();
+
                         Object linha[]
                                 = {ponto.getDiaSemana(),
                                     controlePonto.formatDataReturnString(ponto.getDia()),
