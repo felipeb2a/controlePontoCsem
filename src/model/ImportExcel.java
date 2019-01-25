@@ -216,7 +216,7 @@ public class ImportExcel {
         String horaExtraStr = pontoMesAnterior.getPontoMes().getSaldo();
         
         int verificaHoraNegativa = horaExtraStr.indexOf("-");
-        if (verificaHoraNegativa == 0) {
+        if (verificaHoraNegativa == -1) {
             System.out.println("Não tem hora para compensar");
         } else {
             pontoMesAnteriorList = pontoDao.ObterListPontoMes(ponto, nameDb);
