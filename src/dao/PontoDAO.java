@@ -34,7 +34,7 @@ public class PontoDAO extends AcessDB {
         PreparedStatement stm = conexao.prepareStatement(sql);
 
         //passando os parametros para a consulta
-        stm.setInt(1,  ponto.getPontoMes().getId());
+        stm.setInt(1,  ponto.getPontoMes().getMes());
         stm.setInt(2,  ponto.getFuncionario().getId());
         
         // recebendo o resultado da consulta
@@ -62,7 +62,6 @@ public class PontoDAO extends AcessDB {
         PreparedStatement stm = conexao.prepareStatement(sql);
 
         //passando os parametros para a consulta
-        System.out.println(ponto.getFuncionario().getId()+ "\n" + ponto.getPontoMes().getMes());
         stm.setInt(1,  ponto.getPontoMes().getMes());
         stm.setInt(2,  ponto.getFuncionario().getId());
 

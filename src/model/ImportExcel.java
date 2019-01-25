@@ -179,7 +179,7 @@ public class ImportExcel {
     public List<Ponto> carregarPontoExcelVerificaMesAnterior(int mes, int ano, Funcionario funcionario, String nameDb) throws FileNotFoundException, IOException, ParseException, SQLException, ClassNotFoundException {
         //adicionar + 1 para o mes ficar de 1 a 12
         int mesPadrao = mes + 1;
-        
+
         ControlePonto controlePonto = new ControlePonto();
         //verifica ano bissexto
         boolean bissexto;
@@ -214,8 +214,8 @@ public class ImportExcel {
         //buscar ponto mes para verificar hora extra positiva ou negativa
         pontoMesAnterior = pontoDao.obterPonto(ponto, nameDb);
         String horaExtraStr = pontoMesAnterior.getPontoMes().getSaldo();
-        
-        int verificaHoraNegativa = horaExtraStr.indexOf("-");
+
+        int verificaHoraNegativa = horaExtraStr.indexOf("-", 0);
         if (verificaHoraNegativa == -1) {
             System.out.println("Não tem hora para compensar");
         } else {
