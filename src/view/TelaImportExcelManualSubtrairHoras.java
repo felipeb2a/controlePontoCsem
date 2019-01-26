@@ -299,15 +299,17 @@ public class TelaImportExcelManualSubtrairHoras extends javax.swing.JFrame {
                     DefaultTableModel model = (DefaultTableModel) tbPonto.getModel();
                     model.setNumRows(0);
 
-                    Date[] dia = new Date[31];
-                    long[] hora = new long[31];
-                    long[] minuto = new long[31];
-                    boolean[] compensar = new boolean[31];
-
+                    Date[] dia = new Date[listaControlePonto.size()];
+                    long[] hora = new long[listaControlePonto.size()];
+                    long[] minuto = new long[listaControlePonto.size()];
+                    boolean[] compensar = new boolean[listaControlePonto.size()];
+                    int i = listaControlePonto.size();
+                    
+                    //erro por causa do int i
                     for (Iterator it = listaControlePonto.iterator(); it.hasNext();) {
-                        int i = 1;
                         ponto = (Ponto) it.next();
 
+                        System.out.println(ponto.getHoraE());
                         hora[i] = ponto.getHoraE();
                         minuto[i] = ponto.getMinutoE();
                         dia[i] = ponto.getDia();
@@ -317,12 +319,12 @@ public class TelaImportExcelManualSubtrairHoras extends javax.swing.JFrame {
                         } else {
                             compensar[i] = false;
                         }
-
-//                        System.out.println("dia: "+ dia[i] + "hora: "+hora[i] + " | minuto: "+minuto[i]+ " | compensar: "+compensar[i]);
+                        i++;
+//                        System.out.println("dia: " + dia[i] + "hora: " + hora[i] + " | minuto: " + minuto[i] + " | compensar: " + compensar[i]);
                     }
 
-                    for (int i = 0; i < hora.length; i++) {
-                        System.out.println("for: "+compensar[i]);
+                    for (i = 0; i < 31; i++) {
+//                        System.out.println("for: " + compensar[i]);
                         if (compensar[i] == false) {
                             long horaPositiva = hora[i];
                             long minutoPositivo = minuto[i];
@@ -348,7 +350,7 @@ public class TelaImportExcelManualSubtrairHoras extends javax.swing.JFrame {
                                             minutoNegativo = 0;
                                         }
                                     }
-                                    System.out.println("hora Positiva: "+horaPositiva+" | hora Negativa: " +horaNegativa+" | Minuto Positivo: "+ minutoPositivo+" | Minuto Negativo: "+minutoNegativo);
+                                    System.out.println("hora Positiva: " + horaPositiva + " | hora Negativa: " + horaNegativa + " | Minuto Positivo: " + minutoPositivo + " | Minuto Negativo: " + minutoNegativo);
                                 }
                                 break;
                             }
