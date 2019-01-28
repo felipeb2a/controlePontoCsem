@@ -287,13 +287,7 @@ public class TelaImportExcelManualSubtrairHoras extends javax.swing.JFrame {
                     pontoMes.setAno(year);
                     pontoMesAnterior.setPontoMes(pontoMes);
 
-                    //buscar ponto mes para verificar hora extra positiva ou negativa
-//                    pontoMesAnterior = pontoDao.obterPonto(pontoMesAnterior, nameDb);
-                    System.out.println(pontoMesAnterior.getFuncionario().getId());
-                    System.out.println(pontoMesAnterior.getPontoMes().getMes());
-                    System.out.println(pontoMesAnterior.getPontoMes().getAno());
-
-                    List<Ponto> pontoMesAnteriorList = pontoDao.ObterListPontoMes(pontoMesAnterior, nameDb);
+//                    List<Ponto> pontoMesAnteriorList = pontoDao.ObterListPontoMes(pontoMesAnterior, nameDb);
 
                     listaControlePonto = excel.carregarPontoExcelVerificaMesAnterior(cbMes.getMonth(), cbAno.getYear(),
                             funcionario, nameDb);
@@ -312,9 +306,9 @@ public class TelaImportExcelManualSubtrairHoras extends javax.swing.JFrame {
 //                    }
                     for (Iterator it = listaControlePonto.iterator(); it.hasNext();) {
                         ponto = (Ponto) it.next();
-
+                        
                         if (ponto.getHoraE() < 0 || ponto.getMinutoE() < 0) {
-                            ponto = compensarHoraExtra(ponto, pontoMesAnteriorList);
+                            ponto = compensarHoraExtra(ponto, pontoMesAnterior);
                         } else {
                             continue;
                         }
@@ -322,7 +316,7 @@ public class TelaImportExcelManualSubtrairHoras extends javax.swing.JFrame {
 
                     for (Iterator it = listaControlePonto.iterator(); it.hasNext();) {
                         ponto = (Ponto) it.next();
-
+                        
                         Object linha[]
                                 = {ponto.getDiaSemana(),
                                     controlePonto.formatDataReturnString(ponto.getDia()),
@@ -331,7 +325,9 @@ public class TelaImportExcelManualSubtrairHoras extends javax.swing.JFrame {
                                     ponto.getEntradaIntervalo(),
                                     ponto.getSaida(),
                                     ponto.getHorasTrabalhadas(),
-                                    ponto.getHoraExtraFomatada()};
+                                    ponto.getHoraExtraFomatada(),
+                                    ponto.getHoraE()+":"+ponto.getMinutoE()
+                                    };
                         model.addRow(linha);
                     }
 
@@ -480,10 +476,12 @@ public class TelaImportExcelManualSubtrairHoras extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     //compensar horas extras
-    public Ponto compensarHoraExtra(Ponto ponto, List<Ponto> listPontoMesAnterior) throws SQLException, ClassNotFoundException {
+    public Ponto compensarHoraExtra(Ponto ponto, Ponto pontoMesAnterior) throws SQLException, ClassNotFoundException {
         Ponto pontoRetorno = new Ponto();
-        Ponto pontoMesAnterior = new Ponto();
-        for (Iterator it = listPontoMesAnterior.iterator(); it.hasNext();) {
+        PontoDAO pontoDao = new PontoDAO();
+        List<Ponto> pontoMesAnteriorList = pontoDao.ObterListPontoMes(pontoMesAnterior, nameDb);
+        
+        for (Iterator it = pontoMesAnteriorList.iterator(); it.hasNext();) {
             pontoMesAnterior = (Ponto) it.next();
             System.out.println("hora negativa:  " + ponto.getHoraE() + " | minuto negativo: " + ponto.getMinutoE());
             System.out.println("hora positiva:  " + pontoMesAnterior.getHoraE() + " | minuto positivo: " + pontoMesAnterior.getMinutoE());
@@ -505,7 +503,7 @@ public class TelaImportExcelManualSubtrairHoras extends javax.swing.JFrame {
                 }
 
                 //alterar ponto mes anterior
-                PontoDAO pontoDao = new PontoDAO();
+                pontoDao = new PontoDAO();
                 pontoDao.atualizarHoraMinutoExtraMesAnterior(pontoMesAnterior, nameDb);
 
             } else {
