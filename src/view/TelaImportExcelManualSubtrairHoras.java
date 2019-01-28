@@ -303,25 +303,74 @@ public class TelaImportExcelManualSubtrairHoras extends javax.swing.JFrame {
                     long[] hora = new long[listaControlePonto.size()];
                     long[] minuto = new long[listaControlePonto.size()];
                     boolean[] compensar = new boolean[listaControlePonto.size()];
-                    int i = listaControlePonto.size();
-                    
-                    //erro por causa do int i
+                    int i = 0;
+
                     for (Iterator it = listaControlePonto.iterator(); it.hasNext();) {
                         ponto = (Ponto) it.next();
 
-                        System.out.println(ponto.getHoraE());
-                        hora[i] = ponto.getHoraE();
-                        minuto[i] = ponto.getMinutoE();
-                        dia[i] = ponto.getDia();
-
-                        if (hora[i] < 0 || minuto[i] < 0) {
-                            compensar[i] = true;
+                        long h = ponto.getHoraE();
+                        long m = ponto.getMinutoE();
+                        Date d = ponto.getDia();
+                        boolean compensa = false;
+                        
+                        if (h < 0 || m < 0) {
+                            compensa = true;
                         } else {
-                            compensar[i] = false;
+                            compensa = false;
                         }
-                        i++;
-//                        System.out.println("dia: " + dia[i] + "hora: " + hora[i] + " | minuto: " + minuto[i] + " | compensar: " + compensar[i]);
+
+                        for (Iterator it2 = pontoMesAnteriorList.iterator(); it2.hasNext();) {
+                            pontoMesAnterior = (Ponto) it2.next();
+
+                            if (compensa == false) {
+                                long horaPositiva = h;
+                                long minutoPositivo = m;
+                                for (int x = 0; x < hora.length; x++) {
+                                    if (compensa == true) {
+                                        long horaNegativa = hora[i];
+                                        long minutoNegativo = minuto[i];
+                                        while (horaNegativa != 0 || horaPositiva != 0) {
+                                            if (horaPositiva + horaNegativa < 0) {
+                                                horaNegativa = ((horaNegativa * -1) - horaPositiva) * -1;
+                                                horaPositiva = 0;
+                                            } else {
+                                                horaPositiva = horaPositiva + horaNegativa;
+                                                horaNegativa = 0;
+                                            }
+                                        }
+                                        while (minutoNegativo != 0 || minutoPositivo != 0) {
+                                            if (minutoPositivo + minutoNegativo < 0) {
+                                                minutoNegativo = ((minutoNegativo * -1) - minutoPositivo) * -1;
+                                                minutoPositivo = 0;
+                                            } else {
+                                                minutoPositivo = minutoPositivo + minutoNegativo;
+                                                minutoNegativo = 0;
+                                            }
+                                        }
+                                        System.out.println("hora Positiva: " + horaPositiva + " | hora Negativa: " + horaNegativa + " | Minuto Positivo: " + minutoPositivo + " | Minuto Negativo: " + minutoNegativo);
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+
                     }
+//                    for (Iterator it = listaControlePonto.iterator(); it.hasNext();) {
+//                        ponto = (Ponto) it.next();
+//
+//                        System.out.println(it);
+//                        hora[i] = ponto.getHoraE();
+//                        minuto[i] = ponto.getMinutoE();
+//                        dia[i] = ponto.getDia();
+//
+//                        if (hora[i] < 0 || minuto[i] < 0) {
+//                            compensar[i] = true;
+//                        } else {
+//                            compensar[i] = false;
+//                        }
+//                        i++;
+//                        System.out.println("dia: " + dia[i] + "hora: " + hora[i] + " | minuto: " + minuto[i] + " | compensar: " + compensar[i]);
+//                    }
 
                     for (i = 0; i < 31; i++) {
 //                        System.out.println("for: " + compensar[i]);
