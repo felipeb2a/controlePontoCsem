@@ -275,134 +275,48 @@ public class TelaImportExcelManualSubtrairHoras extends javax.swing.JFrame {
                 ponto = new Ponto();
                 try {
 
+                    FuncionarioDAO funcionarioDao = new FuncionarioDAO();
+                    funcionario = funcionarioDao.obterNomeFuncionario(funcionario, nameDb);
+
                     //buscar ponto mes anterior
                     PontoDAO pontoDao = new PontoDAO();
                     Ponto pontoMesAnterior = new Ponto();
                     pontoMesAnterior.setFuncionario(funcionario);
                     PontoMes pontoMes = new PontoMes();
                     pontoMes.setMes(month);
+                    pontoMes.setAno(year);
                     pontoMesAnterior.setPontoMes(pontoMes);
 
                     //buscar ponto mes para verificar hora extra positiva ou negativa
-                    pontoMesAnterior = pontoDao.obterPonto(pontoMesAnterior, nameDb);
-                    String horaExtraStr = pontoMesAnterior.getPontoMes().getSaldo();
+//                    pontoMesAnterior = pontoDao.obterPonto(pontoMesAnterior, nameDb);
+                    System.out.println(pontoMesAnterior.getFuncionario().getId());
+                    System.out.println(pontoMesAnterior.getPontoMes().getMes());
+                    System.out.println(pontoMesAnterior.getPontoMes().getAno());
 
-//                    int verificaHoraNegativa = horaExtraStr.indexOf("-", 0);
-//                    if (verificaHoraNegativa == -1) {
-//                        System.out.println("Não tem hora para compensar");
-//                    } else {
                     List<Ponto> pontoMesAnteriorList = pontoDao.ObterListPontoMes(pontoMesAnterior, nameDb);
-//                    }
 
                     listaControlePonto = excel.carregarPontoExcelVerificaMesAnterior(cbMes.getMonth(), cbAno.getYear(),
                             funcionario, nameDb);
+
                     DefaultTableModel model = (DefaultTableModel) tbPonto.getModel();
                     model.setNumRows(0);
 
-                    Date[] dia = new Date[listaControlePonto.size()];
-                    long[] hora = new long[listaControlePonto.size()];
-                    long[] minuto = new long[listaControlePonto.size()];
-                    boolean[] compensar = new boolean[listaControlePonto.size()];
-                    int i = 0;
-
-                    for (Iterator it = listaControlePonto.iterator(); it.hasNext();) {
-                        ponto = (Ponto) it.next();
-
-                        long h = ponto.getHoraE();
-                        long m = ponto.getMinutoE();
-                        Date d = ponto.getDia();
-                        boolean compensa = false;
-                        
-                        if (h < 0 || m < 0) {
-                            compensa = true;
-                        } else {
-                            compensa = false;
-                        }
-
-                        for (Iterator it2 = pontoMesAnteriorList.iterator(); it2.hasNext();) {
-                            pontoMesAnterior = (Ponto) it2.next();
-
-                            if (compensa == false) {
-                                long horaPositiva = h;
-                                long minutoPositivo = m;
-                                for (int x = 0; x < hora.length; x++) {
-                                    if (compensa == true) {
-                                        long horaNegativa = hora[i];
-                                        long minutoNegativo = minuto[i];
-                                        while (horaNegativa != 0 || horaPositiva != 0) {
-                                            if (horaPositiva + horaNegativa < 0) {
-                                                horaNegativa = ((horaNegativa * -1) - horaPositiva) * -1;
-                                                horaPositiva = 0;
-                                            } else {
-                                                horaPositiva = horaPositiva + horaNegativa;
-                                                horaNegativa = 0;
-                                            }
-                                        }
-                                        while (minutoNegativo != 0 || minutoPositivo != 0) {
-                                            if (minutoPositivo + minutoNegativo < 0) {
-                                                minutoNegativo = ((minutoNegativo * -1) - minutoPositivo) * -1;
-                                                minutoPositivo = 0;
-                                            } else {
-                                                minutoPositivo = minutoPositivo + minutoNegativo;
-                                                minutoNegativo = 0;
-                                            }
-                                        }
-                                        System.out.println("hora Positiva: " + horaPositiva + " | hora Negativa: " + horaNegativa + " | Minuto Positivo: " + minutoPositivo + " | Minuto Negativo: " + minutoNegativo);
-                                    }
-                                    break;
-                                }
-                            }
-                        }
-
-                    }
 //                    for (Iterator it = listaControlePonto.iterator(); it.hasNext();) {
 //                        ponto = (Ponto) it.next();
 //
-//                        System.out.println(it);
-//                        hora[i] = ponto.getHoraE();
-//                        minuto[i] = ponto.getMinutoE();
-//                        dia[i] = ponto.getDia();
-//
-//                        if (hora[i] < 0 || minuto[i] < 0) {
-//                            compensar[i] = true;
-//                        } else {
-//                            compensar[i] = false;
+//                        if (ponto.getHoraE() < 0 || ponto.getMinutoE() < 0) {
+//                            System.out.println("antes | hora:  " + ponto.getHoraE() + " | minuto: " + ponto.getMinutoE());
+//                            ponto = compensarHoraExtra(ponto, pontoMesAnteriorList);
+//                            System.out.println("depois | hora:  " + ponto.getHoraE() + " | minuto: " + ponto.getMinutoE());
 //                        }
-//                        i++;
-//                        System.out.println("dia: " + dia[i] + "hora: " + hora[i] + " | minuto: " + minuto[i] + " | compensar: " + compensar[i]);
 //                    }
+                    for (Iterator it = listaControlePonto.iterator(); it.hasNext();) {
+                        ponto = (Ponto) it.next();
 
-                    for (i = 0; i < 31; i++) {
-//                        System.out.println("for: " + compensar[i]);
-                        if (compensar[i] == false) {
-                            long horaPositiva = hora[i];
-                            long minutoPositivo = minuto[i];
-                            for (int x = 0; x < hora.length; x++) {
-                                if (compensar[i] == true) {
-                                    long horaNegativa = hora[i];
-                                    long minutoNegativo = minuto[i];
-                                    while (horaNegativa != 0 || horaPositiva != 0) {
-                                        if (horaPositiva + horaNegativa < 0) {
-                                            horaNegativa = ((horaNegativa * -1) - horaPositiva) * -1;
-                                            horaPositiva = 0;
-                                        } else {
-                                            horaPositiva = horaPositiva + horaNegativa;
-                                            horaNegativa = 0;
-                                        }
-                                    }
-                                    while (minutoNegativo != 0 || minutoPositivo != 0) {
-                                        if (minutoPositivo + minutoNegativo < 0) {
-                                            minutoNegativo = ((minutoNegativo * -1) - minutoPositivo) * -1;
-                                            minutoPositivo = 0;
-                                        } else {
-                                            minutoPositivo = minutoPositivo + minutoNegativo;
-                                            minutoNegativo = 0;
-                                        }
-                                    }
-                                    System.out.println("hora Positiva: " + horaPositiva + " | hora Negativa: " + horaNegativa + " | Minuto Positivo: " + minutoPositivo + " | Minuto Negativo: " + minutoNegativo);
-                                }
-                                break;
-                            }
+                        if (ponto.getHoraE() < 0 || ponto.getMinutoE() < 0) {
+                            ponto = compensarHoraExtra(ponto, pontoMesAnteriorList);
+                        } else {
+                            continue;
                         }
                     }
 
@@ -564,4 +478,81 @@ public class TelaImportExcelManualSubtrairHoras extends javax.swing.JFrame {
     private javax.swing.JLabel txtHoraTrabalhada;
     private javax.swing.JLabel txtHorasExtras;
     // End of variables declaration//GEN-END:variables
+
+    //compensar horas extras
+    public Ponto compensarHoraExtra(Ponto ponto, List<Ponto> listPontoMesAnterior) throws SQLException, ClassNotFoundException {
+        Ponto pontoRetorno = new Ponto();
+        Ponto pontoMesAnterior = new Ponto();
+        for (Iterator it = listPontoMesAnterior.iterator(); it.hasNext();) {
+            pontoMesAnterior = (Ponto) it.next();
+            System.out.println("hora negativa:  " + ponto.getHoraE() + " | minuto negativo: " + ponto.getMinutoE());
+            System.out.println("hora positiva:  " + pontoMesAnterior.getHoraE() + " | minuto positivo: " + pontoMesAnterior.getMinutoE());
+            if (pontoMesAnterior.getHoraE() > 0 || pontoMesAnterior.getMinutoE() > 0) {
+                if (pontoMesAnterior.getHoraE() + ponto.getHoraE() < 0) {
+                    ponto.setHoraE(((ponto.getHoraE() * -1) - pontoMesAnterior.getHoraE()) * -1);
+                    pontoMesAnterior.setHoraE(0);
+                } else {
+                    pontoMesAnterior.setHoraE(pontoMesAnterior.getHoraE() + ponto.getHoraE());
+                    ponto.setHoraE(0);
+                }
+
+                if (pontoMesAnterior.getMinutoE() + ponto.getMinutoE() < 0) {
+                    ponto.setMinutoE(((ponto.getMinutoE() * -1) - pontoMesAnterior.getMinutoE()) * -1);
+                    pontoMesAnterior.setMinutoE(0);
+                } else {
+                    pontoMesAnterior.setMinutoE(pontoMesAnterior.getMinutoE() + ponto.getMinutoE());
+                    ponto.setMinutoE(0);
+                }
+
+                //alterar ponto mes anterior
+                PontoDAO pontoDao = new PontoDAO();
+                pontoDao.atualizarHoraMinutoExtraMesAnterior(pontoMesAnterior, nameDb);
+
+            } else {
+                continue;
+            }
+
+            if (ponto.getHoraE() == 0 && ponto.getMinutoE() == 0) {
+                break;
+            }
+        }
+        pontoRetorno = ponto;
+
+        return pontoRetorno;
+    }
+//    //compensar horas extras
+//    public Ponto compensarHoraExtra(Ponto ponto, List<Ponto> listPontoMesAnterior) throws SQLException, ClassNotFoundException {
+//        Ponto pontoRetorno = new Ponto();
+//        Ponto pontoMesAnterior = new Ponto();
+//        for (Iterator it = listPontoMesAnterior.iterator(); it.hasNext();) {
+//            pontoMesAnterior = (Ponto) it.next();
+//            System.out.println("hora negativa:  " + ponto.getHoraE() + " | minuto negativo: " + ponto.getMinutoE());
+//            System.out.println("hora positiva:  " + pontoMesAnterior.getHoraE() + " | minuto positivo: " + pontoMesAnterior.getMinutoE());
+//            if (pontoMesAnterior.getHoraE() > 0 || pontoMesAnterior.getMinutoE() > 0) {
+//
+//                if (pontoMesAnterior.getHoraE() + ponto.getHoraE() < 0) {
+//                    ponto.setHoraE(((ponto.getHoraE() * -1) - pontoMesAnterior.getHoraE()) * -1);
+//                    pontoMesAnterior.setHoraE(0);
+//                } else {
+//                    pontoMesAnterior.setHoraE(pontoMesAnterior.getHoraE() + ponto.getHoraE());
+//                    ponto.setHoraE(0);
+//                }
+//
+//                if (pontoMesAnterior.getMinutoE() + ponto.getMinutoE() < 0) {
+//                    ponto.setMinutoE(((ponto.getMinutoE() * -1) - pontoMesAnterior.getMinutoE()) * -1);
+//                    pontoMesAnterior.setMinutoE(0);
+//                } else {
+//                    pontoMesAnterior.setMinutoE(pontoMesAnterior.getMinutoE() + ponto.getMinutoE());
+//                    ponto.setMinutoE(0);
+//                }
+//                pontoRetorno = ponto;
+//                break;
+//            }
+//        }
+//        //alterar ponto mes anterior
+//        PontoDAO pontoDao = new PontoDAO();
+//        pontoDao.atualizarHoraMinutoExtraMesAnterior(pontoMesAnterior, nameDb);
+//
+//        return pontoRetorno;
+//    }
 }

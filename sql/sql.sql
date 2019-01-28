@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS `csem_controle_de_ponto`.`Ponto` (
   `dia` DATE NULL,
   `entrada` TIME NULL,
   `saidaIntervalo` TIME NULL,
-  `entraIntervalo` TIME NULL,
+  `entradaIntervalo` TIME NULL,
   `saida` TIME NULL,
   `horasTrabalhadasDia` TIME NULL,
   `horasExtrasTotalDia` VARCHAR(45) NULL,

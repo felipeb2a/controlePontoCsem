@@ -18,7 +18,8 @@ import model.PontoMes;
  * @author felipe.ferreira
  */
 public class PontoDAO extends AcessDB {
-
+    
+    //LISTAR OBJETO
     public List<Ponto> ObterListPontoMes(Ponto ponto, String dbName) throws SQLException, ClassNotFoundException {
 
         // lista de retorno
@@ -28,14 +29,15 @@ public class PontoDAO extends AcessDB {
         Connection conexao = conectar(dbName);
 
         // contruindo a consulta
-        String sql = "select * from ponto p inner join pontomes pm on pm.idPontoMes = p.fkPontoMes inner join funcionario f on f.idFuncionario = p.fkFuncionario  where pm.mes = ?  and f.idFuncionario = ?";
+        String sql = "select * from ponto p inner join pontomes pm on pm.idPontoMes = p.fkPontoMes inner join funcionario f on f.idFuncionario = p.fkFuncionario  where pm.mes = ? and pm.ano = ? and f.idFuncionario = ?";
 
         // criando o objeto que vai executar a consulta no banco
         PreparedStatement stm = conexao.prepareStatement(sql);
-
+        System.out.println(ponto.getPontoMes().getMes());
         //passando os parametros para a consulta
         stm.setInt(1,  ponto.getPontoMes().getMes());
-        stm.setInt(2,  ponto.getFuncionario().getId());
+        stm.setInt(2,  ponto.getPontoMes().getAno());
+        stm.setInt(3,  ponto.getFuncionario().getId());
         
         // recebendo o resultado da consulta
         ResultSet resultado = stm.executeQuery();
@@ -48,6 +50,7 @@ public class PontoDAO extends AcessDB {
         return pontoList;
     }
 
+    //RECUPERAR UM OBJETO NO BANCO
     public Ponto obterPonto(Ponto ponto, String dbName) throws SQLException, ClassNotFoundException, ParseException {
         // objeto de retorno
         Ponto pontoRetorno = new Ponto();
@@ -76,6 +79,7 @@ public class PontoDAO extends AcessDB {
         return pontoRetorno;
     }
 
+    //RETORNO LISTA DO OBJETO
     public List<Ponto> consultaListPonto(ResultSet resultado) throws SQLException, ClassNotFoundException {
 
         // lista de retorno
@@ -121,6 +125,7 @@ public class PontoDAO extends AcessDB {
         return pontoList;
     }
     
+    //RETORNA UM OBJETO
     public Ponto consultaPonto(ResultSet resultado) throws SQLException, ClassNotFoundException {
 
         Ponto pontoRetorno = new Ponto();
@@ -161,6 +166,27 @@ public class PontoDAO extends AcessDB {
         }
 
         return pontoRetorno;
+    }
+    
+    //ALTERAR HORA EXTRA E MINUTO EXTRA MES ANTERIOR
+    public void atualizarHoraMinutoExtraMesAnterior(Ponto ponto, String nameDb) throws SQLException, ClassNotFoundException{
+     
+            // conectando ao banco de dados
+            Connection conexao = conectar(nameDb);            
+                     
+            // contruindo a consulta
+            String sql = "update ponto set horaExtraDia = ?, minutoExtraDia = ? where idPonto = ?  and fkFuncionario = ?";
+            
+            // criando o objeto que vai executar a consulta no banco
+            PreparedStatement stm = conexao.prepareStatement(sql);
+     
+            stm.setLong(1, ponto.getHoraE());
+            stm.setLong(2, ponto.getMinutoE());
+            stm.setInt(3, ponto.getId());        
+            stm.setInt(4, ponto.getFuncionario().getId());
+            
+            // recebendo o resultado da consulta
+            stm.executeUpdate();
     }
     
     public void salvaPonto(List<Ponto> pontoList, Ponto ponto, String nameDb) throws ClassNotFoundException, SQLException, ParseException {
