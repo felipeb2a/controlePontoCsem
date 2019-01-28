@@ -485,7 +485,8 @@ public class TelaImportExcelManualSubtrairHoras extends javax.swing.JFrame {
             pontoMesAnterior = (Ponto) it.next();
             System.out.println("hora negativa:  " + ponto.getHoraE() + " | minuto negativo: " + ponto.getMinutoE());
             System.out.println("hora positiva:  " + pontoMesAnterior.getHoraE() + " | minuto positivo: " + pontoMesAnterior.getMinutoE());
-            if (pontoMesAnterior.getHoraE() > 0 || pontoMesAnterior.getMinutoE() > 0) {
+            if ((pontoMesAnterior.getHoraE() > 0 && pontoMesAnterior.getMinutoE() > 0) || 
+                    (pontoMesAnterior.getHoraE() >= 0 && pontoMesAnterior.getMinutoE() > 0)) {
                 if (pontoMesAnterior.getHoraE() + ponto.getHoraE() < 0) {
                     ponto.setHoraE(((ponto.getHoraE() * -1) - pontoMesAnterior.getHoraE()) * -1);
                     pontoMesAnterior.setHoraE(0);
