@@ -119,7 +119,10 @@ public class ImportExcel {
                     int dia = Integer.parseInt(array[i][x]);
                     //Date data = null;
                     try {
+                        //verificar se a data acrescentou dia do mes seguinte
+                        
                         ponto = controlePonto.formatDataInt(dia, mes, ano);
+                        
                     } catch (ParseException ex) {
                         Logger.getLogger(ImportExcel.class.getName()).log(Level.SEVERE, null, ex);
                     }
