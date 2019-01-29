@@ -296,6 +296,19 @@ public class TelaImportExcelManualSubtrairHoras extends javax.swing.JFrame {
                     //cria tableModelDefault
                     DefaultTableModel model = (DefaultTableModel) tbPonto.getModel();
                     model.setNumRows(0);
+                    
+                    //percorrer listaPontoAtual e compensar hora dentro do mes
+                    //ideia salvar o mes atual primeiro depois fazer o mesmo processo do mes anterior
+                    for (Iterator it = listaControlePonto.iterator(); it.hasNext();) {
+                        ponto = (Ponto) it.next();
+
+                        if (ponto.getHoraE() < 0 || ponto.getMinutoE() < 0) {
+                            Ponto pontoAtual = (Ponto) it.next();
+                            listaControlePonto = controlePonto.compensarHoraExtraMesAtual(ponto, listaControlePonto);
+                        } else {
+                            continue;
+                        }
+                    }
 
                     //percorrer listaPontoAtual e compensar hora do mes anterior
                     for (Iterator it = listaControlePonto.iterator(); it.hasNext();) {
@@ -342,7 +355,7 @@ public class TelaImportExcelManualSubtrairHoras extends javax.swing.JFrame {
                     //imprime hora trabalhada
                     txtHoraTrabalhada.setText(ponto.getSomaHoraTrabalhada());
 
-                    //adicionar no DB
+                    //popular objeto ponto mes
                     pontoMes = new PontoMes();
                     pontoMes.setSomaHoraTrabalhada(ponto.getSomaHoraTrabalhada());
                     pontoMes.setSomaHoraExtra(ponto.getSomaHoraExtra());

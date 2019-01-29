@@ -339,7 +339,6 @@ public class ControlePonto {
         //buscar ponto mes anterior
         PontoDAO pontoDao = new PontoDAO();
         List<Ponto> pontoMesAnteriorList = pontoDao.ObterListPontoMes(pontoMesAnterior, nameDb);
-        //cria objeto do controle de ponto
 
         //percorrer lista mes anterior
         for (Iterator it = pontoMesAnteriorList.iterator(); it.hasNext();) {
@@ -419,5 +418,98 @@ public class ControlePonto {
         pontoRetorno = ponto;
 
         return pontoRetorno;
+    }
+    //COMPENSAR HORA MES ATUAL
+    public List<Ponto> compensarHoraExtraMesAtual(Ponto ponto, List<Ponto> listaControlePonto) throws SQLException, ClassNotFoundException, ParseException {
+        //retorno
+        List<Ponto> listaControlePontoRetorno = null;
+        
+        //objeto ponto local
+        Ponto pontoLocal = new Ponto();
+        
+        //percorrer lista mes anterior
+        for (Iterator it = listaControlePonto.iterator(); it.hasNext();) {
+            pontoLocal = (Ponto) it.next();
+
+            //converter data
+            String d1 = formatDataReturnString(pontoLocal.getDia());
+            String d2 = formatDataReturnString(ponto.getDia());
+            
+            //converter para data devido erro ao converter para LocalDateTime
+            Date diaPontoLocal1  = formatDataString(d1);
+            Date diaPonto1  = formatDataString(d2);
+            
+            //converter Date para  LocalDateTime
+            LocalDateTime diaPontoLocal = LocalDateTime.ofInstant(diaPontoLocal1.toInstant(), ZoneId.systemDefault());
+            LocalDateTime diaPonto = LocalDateTime.ofInstant(diaPonto1.toInstant(), ZoneId.systemDefault());
+            
+            //dias entre as datas do mes atual e mes anterior
+            long dias = ChronoUnit.DAYS.between(diaPontoLocal, diaPonto);
+            
+            //verificar se a diferença entre os dias é negativa
+            if(dias < 0){
+                dias = ChronoUnit.DAYS.between(diaPonto, diaPontoLocal);
+            }
+            
+            //VERIFICA SE O PERIODO ESTA DENTRO DOS 30 DIAS
+            if (dias > 0 && dias < 30) {
+
+                //VERIFICA HORA POSITIVA MES ANTERIOR
+                if (ponto.getHoraE() == 0 && ponto.getMinutoE() == 0) {
+                    //apenas adiciona o valor ao objeto de retorno
+                    pontoLocal = ponto;
+                    
+                } else if ((pontoLocal.getHoraE() > 0 && pontoLocal.getMinutoE() > 0)
+                        || (pontoLocal.getHoraE() >= 0 && pontoLocal.getMinutoE() > 0)) {
+                    System.out.println("hora positiva:  " + pontoLocal.getHoraE() + " | minuto positivo: " + pontoLocal.getMinutoE());
+
+                    //soma hora e minuto
+                    String horaSoma = somaHoraLong(pontoLocal.getHoraE(), pontoLocal.getMinutoE(),
+                            ponto.getHoraE() + ":" + ponto.getMinutoE());
+
+                    //split hora somada
+                    String[] parts = horaSoma.split(":");
+                    long horaSplit = Integer.valueOf(parts[0]);
+                    long minuteSplit = Integer.valueOf(parts[1]);
+
+                    if (horaSplit < 0) {
+                        ponto.setHoraE(horaSplit);
+                        pontoLocal.setHoraE(0);
+                    }
+                    if (minuteSplit < 0) {
+                        ponto.setMinutoE(minuteSplit);
+                        pontoLocal.setMinutoE(0);
+                    }
+                    if (horaSplit > 0) {
+                        ponto.setHoraE(0);
+                        pontoLocal.setHoraE(horaSplit);
+                    }
+                    if (minuteSplit > 0) {
+                        ponto.setMinutoE(0);
+                        pontoLocal.setMinutoE(minuteSplit);
+                    }
+                    if (horaSplit == 0) {
+                        ponto.setHoraE(0);
+                    }
+                    if (minuteSplit == 0) {
+                        ponto.setMinutoE(0);
+                    }
+
+                    System.out.println("hora ponto:  " + ponto.getHoraE() + " | minuto ponto: " + ponto.getMinutoE());
+                    System.out.println("hora ponto anterior:  " + pontoLocal.getHoraE() + " | minuto ponto anterior: " + pontoLocal.getMinutoE());
+
+                    //alterar ponto mes anterior
+//                pontoDao = new PontoDAO();
+//                pontoDao.atualizarHoraMinutoExtraMesAnterior(pontoMesAnterior, nameDb);
+                } else {
+                    continue;
+                }
+            } else {
+                continue;
+            }
+        }
+        listaControlePontoRetorno.add(pontoLocal);
+
+        return listaControlePontoRetorno;
     }
 }
