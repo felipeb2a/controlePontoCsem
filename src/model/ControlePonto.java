@@ -498,17 +498,22 @@ public class ControlePonto {
                     System.out.println("hora ponto:  " + ponto.getHoraE() + " | minuto ponto: " + ponto.getMinutoE());
                     System.out.println("hora ponto anterior:  " + pontoLocal.getHoraE() + " | minuto ponto anterior: " + pontoLocal.getMinutoE());
 
+                    //add objeto na lista
+                    listaControlePontoRetorno.add(pontoLocal);
+                    
                     //alterar ponto mes anterior
 //                pontoDao = new PontoDAO();
 //                pontoDao.atualizarHoraMinutoExtraMesAnterior(pontoMesAnterior, nameDb);
+
                 } else {
+                    pontoLocal = ponto;
                     continue;
                 }
             } else {
+                pontoLocal = ponto;
                 continue;
             }
-        }
-        listaControlePontoRetorno.add(pontoLocal);
+        }        
 
         return listaControlePontoRetorno;
     }

@@ -303,7 +303,7 @@ public class TelaImportExcelManualSubtrairHoras extends javax.swing.JFrame {
                         ponto = (Ponto) it.next();
 
                         if (ponto.getHoraE() < 0 || ponto.getMinutoE() < 0) {
-                            Ponto pontoAtual = (Ponto) it.next();
+//                            Ponto pontoAtual = (Ponto) it.next();
                             listaControlePonto = controlePonto.compensarHoraExtraMesAtual(ponto, listaControlePonto);
                         } else {
                             continue;
